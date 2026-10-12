@@ -11,13 +11,14 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--port',required=True)
+    parser.add_argument('--completion-timeout',type=float,default=60,help='Seconds allowed for the selected recording to finish')
     args=parser.parse_args()
     raw=bytearray(); evidence=[]
     port=serial.Serial();port.port=args.port;port.baudrate=115200;port.timeout=.05;port.dtr=False;port.rts=False;port.open()
     def command(text,seconds=.6):
         port.write((text+'\r\n').encode()); data=collect(port,seconds);raw.extend(data)
         clean=re.sub(r'\x1b\[[0-9;?]*[A-Za-z]','',data.decode(errors='replace'))
-        if any(x in clean for x in ('Guru Meditation','abort()','Backtrace:')):raise RuntimeError('Device crash detected')
+        if any(x in clean for x in ('Guru Meditation','abort()','Backtrace:','stack overflow')):raise RuntimeError('Device crash detected')
         return clean
     def status():
         text=command('recorder status')
@@ -47,6 +48,9 @@ def main():
             command('recorder stop')
             s=wait_stopped();assert s['owner']=='None' and s['error']=='ESP_OK',s
             evidence.append({'stop_cycle':cycle,'status':s})
+        command('recorder play1',1)
+        s=wait_stopped(args.completion_timeout);assert s['error']=='ESP_OK' and s['bytes']==s['total'] and s['owner']=='None',s
+        evidence.append({'natural_end':s})
         command('recorder play1',1)
         command('watch home',2)
         command('watch open '+app_id,2)

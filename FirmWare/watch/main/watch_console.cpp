@@ -10,9 +10,30 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <new>
 namespace {
 using namespace esp_brookesia::systems;
 phone::Phone *systemPhone = nullptr;
+struct AppNavigation { int id; bool home; bool start; };
+void applyNavigation(void *data) {
+    const AppNavigation action=*static_cast<AppNavigation *>(data);
+    delete static_cast<AppNavigation *>(data);
+    bool ok;
+    if(action.home) ok=systemPhone->sendNavigateEvent(base::Manager::NavigateType::HOME);
+    else {
+        const base::Context::AppEventData event{action.id,
+            action.start?base::Context::AppEventType::START:base::Context::AppEventType::STOP,nullptr};
+        ok=systemPhone->sendAppEvent(&event);
+    }
+    std::printf("WATCH navigation=%s\n",ok?"ok":"error");
+}
+bool queueNavigation(int id,bool home,bool start) {
+    // App transitions run on the normal UI task, not the small console stack.
+    auto *action=new(std::nothrow) AppNavigation{id,home,start};
+    if(!action)return false;
+    if(lv_async_call(applyNavigation,action)!=LV_RESULT_OK){delete action;return false;}
+    return true;
+}
 int recorder(int argc, char **argv) {
     if(argc>2 || esp_lv_adapter_lock(1000)!=ESP_OK)return 1;
     auto *app=esp_brookesia::apps::Recorder::requestInstance();
@@ -66,15 +87,13 @@ int apps(int argc, char **argv) {
             if (app) std::printf("APP %d %s\n", id, app->getName());
         }
     } else if (argc == 2 && std::strcmp(argv[1], "home") == 0) {
-        result = systemPhone->sendNavigateEvent(base::Manager::NavigateType::HOME);
+        result = queueNavigation(0,true,false);
     } else if (argc == 3 && (std::strcmp(argv[1], "open") == 0 || std::strcmp(argv[1], "close") == 0)) {
         char *end = nullptr;
         const long id = std::strtol(argv[2], &end, 10);
         if (*end || id<1 || id>64 || !systemPhone->getManager().getInstalledApp(static_cast<int>(id))) result=false;
         else {
-            const base::Context::AppEventData event{static_cast<int>(id),
-                std::strcmp(argv[1],"open")==0 ? base::Context::AppEventType::START : base::Context::AppEventType::STOP, nullptr};
-            result=systemPhone->sendAppEvent(&event);
+            result=queueNavigation(static_cast<int>(id),false,std::strcmp(argv[1],"open")==0);
         }
     } else result = false;
     const auto *active = systemPhone->getManager().getActiveApp();

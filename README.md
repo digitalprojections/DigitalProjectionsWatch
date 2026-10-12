@@ -2,7 +2,7 @@
 
 An extensible watch system for the ESP32-S3 with a 2.06-inch 410 x 502 AMOLED display.
 
-Version 0.1.5 adds a recordings library and on-watch WAV playback. Open **Recorder > Recordings**, tap a recording to play it, and use **Stop** to end playback. **Older** browses additional files; the back arrow returns to recording. Recordings are streamed from SD without loading the whole file into memory.
+Version 0.1.6 adds a recordings library and on-watch WAV playback. Open **Recorder > Recordings**, tap a recording to play it, and use **Stop** to end playback. **Older** browses additional files; the back arrow returns to recording. Recordings are streamed from SD without loading the whole file into memory.
 
 Version 0.1.4 added phone-based Wi-Fi setup over Bluetooth Low Energy. Enter the network password on Android instead of the watch keyboard. See [phone setup instructions](docs/phone-wifi-setup.md). Host state and UI tests passed. Version 0.1.4 is installed with a matching flash digest; Bluetooth startup, cancellation and restart passed on the watch. Android phone provisioning succeeded: the user confirmed Wi-Fi connected, and USB reported Success with provisioning stopped. See [0.1.4 validation evidence](docs/watch-validation-0.1.4.json).
 
