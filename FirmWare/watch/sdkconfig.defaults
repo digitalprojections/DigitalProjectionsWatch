@@ -123,3 +123,6 @@ CONFIG_BT_CTRL_BLE_MAX_ACT=2
 
 # Keep TLS record/handshake buffers out of scarce internal SRAM.
 CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC=y
+
+# UTC system time belongs to dp_time; AI provider offsets are display metadata.
+# CONFIG_XIAOZHI_SYNC_SYSTEM_TIME_FROM_SERVER is not set

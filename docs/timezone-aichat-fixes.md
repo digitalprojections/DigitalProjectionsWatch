@@ -1,4 +1,4 @@
-# Digital Projections Watch 0.1.10
+# Digital Projections Watch 0.1.11
 
 The Date & time timezone control opens a bounded list inside the settings page. Japan is the first fully visible row. The list has large touch targets, a Back control, balanced side margins and bottom clearance for the rounded screen. Periodic clock updates do not reset the scroll position.
 
@@ -15,4 +15,8 @@ Repeatable checks:
 
 AI diagnostic states: 0 Wi-Fi required, 1 preparing, 2 activation required, 3 connecting, 4 ready, 5 listening, 6 processing, 7 speaking, 8 error. Reaching Ready proves transport setup; a spoken request and audible reply still need a physical watch test.
 
-Release hardware verification is pending.
+Version 0.1.10 was installed with a matching digest and AI Chat reached Ready (state 4), audio ready, no allocation failure and no crash. Internal free memory was 37,843 bytes; PSRAM free memory was 4,332,152 bytes.
+
+The subsequent cross-app clock check caught a nine-hour UTC shift. The vendor AI service client added its provider timezone offset to system time. Version 0.1.11 disables `XIAOZHI_SYNC_SYSTEM_TIME_FROM_SERVER`, leaving dp_time as the shared UTC clock owner.
+
+Final 0.1.11 hardware verification is pending.
