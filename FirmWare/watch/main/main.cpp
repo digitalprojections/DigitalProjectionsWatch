@@ -25,6 +25,8 @@
 #include "Gallery.hpp"
 #include "MusicPlayer.hpp"
 #include "Recorder.hpp"
+#include "TimeService.h"
+#include "WatchStatusGeometry.h"
 #include "Settings.hpp"
 #include "SpecAnalyzer.hpp"
 #include "VideoPlayer.hpp"
@@ -48,8 +50,8 @@ using namespace esp_brookesia::systems::phone;
 
 namespace {
 
-constexpr int ROUND_STATUS_BAR_HEIGHT = 40;
-constexpr int ROUND_STATUS_BAR_CONTENT_INSET = 12;
+constexpr int ROUND_STATUS_BAR_HEIGHT = dpwatch::statusBarHeight;
+constexpr int ROUND_STATUS_BAR_CONTENT_INSET = dpwatch::statusSideInset;
 constexpr uint32_t BROOKESIA_LVGL_TASK_STACK_SIZE = 20 * 1024;
 constexpr uint16_t BROOKESIA_LCD_DRAW_BUFFER_HEIGHT = 12;
 constexpr size_t BROOKESIA_LCD_MAX_TRANSFER_SIZE =
@@ -474,15 +476,20 @@ Stylesheet make_watch_stylesheet()
     auto &status_bar = stylesheet.display.status_bar.data;
     status_bar.main.size = StyleSize::RECT_W_PERCENT(100, ROUND_STATUS_BAR_HEIGHT);
     status_bar.main.background_color = StyleColor::COLOR(0x1A1A1A);
-    status_bar.main.text_font = StyleFont::SIZE(18);
+    status_bar.main.text_font = StyleFont::SIZE(20);
     status_bar.flags.enable_main_size_min = 0;
     status_bar.flags.enable_main_size_max = 0;
     status_bar.flags.enable_battery_label = 1;
     status_bar.icon_common_size = StyleSize::SQUARE(24);
 
-    for (int i = 0; i < status_bar.area.num; ++i) {
-        status_bar.area.data[i].layout_column_start_offset = ROUND_STATUS_BAR_CONTENT_INSET;
-        status_bar.area.data[i].layout_column_pad = 4;
+    status_bar.flags.enable_clock = 1;
+    status_bar.area.num = 3;
+    status_bar.wifi.area_index=0; status_bar.clock.area_index=1; status_bar.battery.area_index=2;
+    for (int i=0;i<3;++i) {
+        status_bar.area.data[i].size=StyleSize::RECT_W_PERCENT(i==1?28:36,ROUND_STATUS_BAR_HEIGHT);
+        status_bar.area.data[i].layout_column_align=i==0?StatusBar::AreaAlign::START:i==1?StatusBar::AreaAlign::CENTER:StatusBar::AreaAlign::END;
+        status_bar.area.data[i].layout_column_start_offset=i==1?0:ROUND_STATUS_BAR_CONTENT_INSET;
+        status_bar.area.data[i].layout_column_pad=4;
     }
 
     // Keep launcher icons and their labels inside the round panel's visible
@@ -523,14 +530,15 @@ void update_status_bar_clock(lv_timer_t *timer)
     if (status_bar == nullptr) {
         return;
     }
-    status_bar->setClock(time_info.tm_hour, time_info.tm_min);
+    if (dpwatch::timeSnapshot().valid) status_bar->setClock(time_info.tm_hour, time_info.tm_min);
+    else status_bar->setClockPending();
 }
 
 }  // namespace
 
 extern "C" void app_main(void)
 {
-    ESP_UTILS_LOGI("Starting Digital Projections Watch 0.1.6");
+    ESP_UTILS_LOGI("Starting Digital Projections Watch 0.1.7");
     lv_display_t *display = start_brookesia_display();
     ESP_UTILS_CHECK_NULL_EXIT(display, "Start display failed");
 
@@ -648,6 +656,7 @@ extern "C" void app_main(void)
             // Registry entries are typed as base::App. Use the manager's base
             // install path; all registered products here are phone apps and the
             // phone display performs their normal phone-specific setup.
+            static_cast<systems::phone::App *>(app)->setStatusBarVisualMode(StatusBar::VisualMode::SHOW_FIXED);
             app_id = phone->getManager().installApp(app);
             boot_loading.attachToSystemLayer(display);
         }
@@ -711,6 +720,7 @@ extern "C" void app_main(void)
     );
 
     refresh_boot_loading(boot_loading, "Starting status services...", 96);
+    dpwatch::startTimeService();
     {
         LvLockGuard gui_guard;
         lv_timer_create(update_status_bar_clock, 1000, phone);

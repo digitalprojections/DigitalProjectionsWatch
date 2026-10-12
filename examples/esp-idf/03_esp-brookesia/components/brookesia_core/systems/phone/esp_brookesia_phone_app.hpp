@@ -130,6 +130,12 @@ public:
      *
      */
     bool setStatusIconState(int state);
+    // Set before installation so the core reserves the bar in the app's visual area.
+    bool setStatusBarVisualMode(StatusBar::VisualMode mode) {
+        if (checkInitialized()) return false;
+        _init_config.status_bar_visual_mode=mode;
+        return true;
+    }
 
     /**
      * @brief Get the initial config of the phone app

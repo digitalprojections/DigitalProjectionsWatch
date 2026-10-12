@@ -17,3 +17,7 @@ print(ROOT/'.build/phone-preview.png')
 subprocess.run([str(BUILD/'Release/recorder_preview.exe'),str(BUILD/'recorder-preview.ppm')],check=True)
 Image.open(BUILD/'recorder-preview.ppm').save(ROOT/'.build/recorder-preview.png')
 print(ROOT/'.build/recorder-preview.png')
+
+subprocess.run([str(BUILD/'Release/time_preview.exe'),str(BUILD/'time-preview.ppm')],check=True)
+Image.open(BUILD/'time-preview.ppm').save(ROOT/'.build/time-preview.png')
+print(ROOT/'.build/time-preview.png')

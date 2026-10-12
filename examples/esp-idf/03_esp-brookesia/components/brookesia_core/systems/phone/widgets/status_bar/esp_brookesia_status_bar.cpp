@@ -693,6 +693,27 @@ bool StatusBar::setClock(int hour, int minute, bool is_pm) const
     return true;
 }
 
+bool StatusBar::setClockPending() const {
+    if (!checkClockInitialized()) return false;
+    _clock_hour=-1; _clock_min=-1;
+    lv_label_set_text(_clock_hour_label.get(), "--");
+    lv_label_set_text(_clock_min_label.get(), "--");
+    return true;
+}
+bool StatusBar::getWidgetBounds(lv_area_t &clock, lv_area_t &battery, lv_area_t &wifi) const {
+    if (!_main_obj || !_clock_obj) return false;
+    lv_obj_update_layout(_main_obj.get());
+    lv_obj_get_coords(_clock_obj.get(), &clock);
+    const auto b=_id_icon_map.find(_battery_id), w=_id_icon_map.find(_wifi_id);
+    if(b==_id_icon_map.end()||w==_id_icon_map.end()||!b->second->getBounds(battery)||!w->second->getBounds(wifi))return false;
+    if(_battery_label && !lv_obj_has_flag(_battery_label.get(),LV_OBJ_FLAG_HIDDEN)) {
+        lv_area_t label;lv_obj_get_coords(_battery_label.get(), &label);
+        battery.x1=std::min(battery.x1,label.x1);battery.x2=std::max(battery.x2,label.x2);
+        battery.y1=std::min(battery.y1,label.y1);battery.y2=std::max(battery.y2,label.y2);
+    }
+    return true;
+}
+
 bool StatusBar::setClock(int hour, int minute) const
 {
     ESP_UTILS_LOGD("Set clock(%02d:%02d)", hour, minute);

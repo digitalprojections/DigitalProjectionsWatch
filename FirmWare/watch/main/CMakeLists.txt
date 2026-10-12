@@ -13,6 +13,7 @@ idf_component_register(
         espressif__esp_lvgl_adapter
         console
         dp_connectivity
+        dp_time
         dp_motion
         dp_watch_2048
         dp_watch_board

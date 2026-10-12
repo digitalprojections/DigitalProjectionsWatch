@@ -112,6 +112,8 @@ public:
     bool setClockFormat(ClockFormat format) const;
     bool setClock(int hour, int min, bool is_pm) const;
     bool setClock(int hour, int min) const;
+    bool setClockPending() const;
+    bool getWidgetBounds(lv_area_t &clock, lv_area_t &battery, lv_area_t &wifi) const;
 
     bool checkVisible(void) const;
 

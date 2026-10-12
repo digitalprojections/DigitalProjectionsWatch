@@ -23,13 +23,13 @@ struct RecorderLibraryView {
       lv_obj_add_event_cb(b, callback, LV_EVENT_CLICKED, user);
       return b;
     };
-    back = button(LV_SYMBOL_LEFT, 56, 48, -146, 42);
+    back = button(LV_SYMBOL_LEFT, 56, 48, -146, 18);
     lv_obj_t *title = lv_label_create(root);
     lv_label_set_text(title, "Recordings");
     lv_obj_set_style_text_font(title, &lv_font_montserrat_24, 0);
-    lv_obj_align(title, LV_ALIGN_TOP_MID, 25, 53);
+    lv_obj_align(title, LV_ALIGN_TOP_MID, 25, 29);
     for (size_t i = 0; i < 5; ++i) {
-      rows[i] = button("", 350, 46, 0, 100 + static_cast<int>(i) * 51);
+      rows[i] = button("", 350, 46, 0, 70 + static_cast<int>(i) * 51);
       labels[i] = lv_obj_get_child(rows[i], 0);
       lv_obj_set_width(labels[i], 326);
       lv_label_set_long_mode(labels[i], LV_LABEL_LONG_DOT);
@@ -39,9 +39,11 @@ struct RecorderLibraryView {
     lv_obj_set_size(status, 350, 48);
     lv_obj_set_style_text_align(status, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_set_style_text_font(status, &lv_font_montserrat_18, 0);
-    lv_obj_align(status, LV_ALIGN_TOP_MID, 0, 359);
+    lv_obj_align(status, LV_ALIGN_TOP_MID, 0, 329);
     stop = button("Stop", 162, 52, -92, 419);
+    lv_obj_align(stop, LV_ALIGN_BOTTOM_MID, -92, -24);
     older = button("Older", 162, 52, 92, 419);
+    lv_obj_align(older, LV_ALIGN_BOTTOM_MID, 92, -24);
     lv_obj_add_flag(root, LV_OBJ_FLAG_HIDDEN);
   }
 };

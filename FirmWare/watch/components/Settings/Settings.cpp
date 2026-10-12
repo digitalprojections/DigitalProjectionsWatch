@@ -9,7 +9,6 @@
 #include "esp_brookesia.hpp"
 #include "esp_event.h"
 #include "esp_netif.h"
-#include "esp_sntp.h"
 #include "esp_wifi.h"
 #include <stdlib.h>
 #include <sys/time.h>
@@ -32,44 +31,6 @@ LV_IMG_DECLARE(img_app_settings);
 
 namespace esp_brookesia::apps
 {
-    static bool s_time_sync_started = false;
-    static bool s_time_synced = false;
-
-    static void time_sync_notification_cb(struct timeval *tv)
-    {
-        (void)tv;
-        setenv("TZ", "CST-8", 1);
-        tzset();
-        s_time_synced = true;
-        ESP_UTILS_LOGI("SNTP time synced, timezone CST-8 applied");
-    }
-
-    static void start_time_sync_once()
-    {
-        if (s_time_sync_started || esp_sntp_enabled()) {
-            return;
-        }
-
-        // Start SNTP only after the network stack has obtained an address.
-        // This avoids retries while Wi-Fi is still connecting.
-        esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
-        esp_sntp_setservername(0, "ntp.aliyun.com");
-        esp_sntp_set_time_sync_notification_cb(time_sync_notification_cb);
-        esp_sntp_init();
-        s_time_sync_started = true;
-        ESP_UTILS_LOGI("SNTP time sync started");
-    }
-
-    static void wifi_time_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
-    {
-        (void)arg;
-        (void)event_data;
-
-        if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
-            start_time_sync_once();
-        }
-    }
-
     Settings *Settings::_instance = nullptr;
 
     Settings *Settings::requestInstance(bool use_status_bar, bool use_navigation_bar)
@@ -113,6 +74,7 @@ namespace esp_brookesia::apps
 
         settings_ui::add_section(list1, "System", style_list_text);
         add_button_with_arrow(&battery, "Power");
+        add_button_with_arrow(&info, "Date & time");
         add_button_with_arrow(LV_SYMBOL_SD_CARD, "Storage");
 
         settings_ui::add_section(list1, "More", style_list_text);
@@ -195,6 +157,7 @@ namespace esp_brookesia::apps
         {
             lv_async_call(open_page_async_cb, (void *)"Storage");
         }
+        else if (strcmp(txt, "Date & time") == 0) { lv_async_call(open_page_async_cb,(void *)"Time"); }
         else if (strcmp(txt, "About") == 0)
         {
             lv_async_call(open_page_async_cb, (void *)"About");
@@ -235,6 +198,7 @@ namespace esp_brookesia::apps
             active_page = ActivePage::Storage;
             StoragePage::requestInstance(false, false)->run();
         }
+        else if (strcmp(page_name, "Time") == 0) { active_page=ActivePage::Time; TimePage::instance().run(); }
         else if (strcmp(page_name, "About") == 0)
         {
             active_page = ActivePage::About;
@@ -246,6 +210,7 @@ namespace esp_brookesia::apps
     {
         switch (active_page)
         {
+        case ActivePage::Time: TimePage::instance().close(); break;
         case ActivePage::Bluetooth:
             BluetoothPage::instance().close();
             break;
@@ -273,6 +238,8 @@ namespace esp_brookesia::apps
         }
         active_page = ActivePage::None;
     }
+
+    void Settings::showTimePage() { close_active_page(); open_page("Time"); }
 
     void Settings::showBluetoothPage() { close_active_page(); open_page("Bluetooth"); }
 
@@ -342,7 +309,6 @@ namespace esp_brookesia::apps
         static bool netif_initialized = false;
         static bool event_loop_initialized = false;
         static bool wifi_initialized = false;
-        static bool time_event_handler_registered = false;
         static esp_netif_t *sta_netif = nullptr;
 
         if (!netif_initialized) {
@@ -382,19 +348,6 @@ namespace esp_brookesia::apps
                 return ret;
             }
             wifi_initialized = true;
-        }
-
-        if (!time_event_handler_registered) {
-            esp_err_t ret = esp_event_handler_register(
-                IP_EVENT,
-                IP_EVENT_STA_GOT_IP,
-                &wifi_time_event_handler,
-                nullptr);
-            if (ret != ESP_OK) {
-                ESP_UTILS_LOGE("Register time sync event handler failed: %s", esp_err_to_name(ret));
-                return ret;
-            }
-            time_event_handler_registered = true;
         }
 
         esp_err_t ret = esp_wifi_set_mode(WIFI_MODE_STA);

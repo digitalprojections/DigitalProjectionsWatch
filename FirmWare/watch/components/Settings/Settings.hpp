@@ -16,6 +16,7 @@
 #include "./ui/StoragePage.hpp"
 #include "./ui/WlanPage.hpp"
 #include "./ui/BluetoothPage.hpp"
+#include "./ui/TimePage.hpp"
 
 namespace esp_brookesia::apps
 {
@@ -32,6 +33,7 @@ namespace esp_brookesia::apps
         bool run(void) override;
         void showRootPage();
         void showBluetoothPage();
+        void showTimePage();
 
     protected:
         Settings(bool use_status_bar, bool use_navigation_bar);
@@ -53,6 +55,7 @@ namespace esp_brookesia::apps
             Power,
             Storage,
             About,
+            Time,
         };
 
         static void event_handler_cb(lv_event_t *e);

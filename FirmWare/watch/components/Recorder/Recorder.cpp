@@ -170,14 +170,14 @@ bool Recorder::run() {
   lv_label_set_text(title, "Voice Recorder");
   lv_obj_set_style_text_font(title, &lv_font_montserrat_28, LV_PART_MAIN);
   lv_obj_set_style_text_color(title, lv_color_white(), LV_PART_MAIN);
-  lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 54);
+  lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 24);
 
   _time_label = lv_label_create(screen);
   lv_label_set_text(_time_label, "00:00");
   lv_obj_set_style_text_font(_time_label, &lv_font_montserrat_40, LV_PART_MAIN);
   lv_obj_set_style_text_color(_time_label, lv_color_hex(0xFF4D67),
                               LV_PART_MAIN);
-  lv_obj_align(_time_label, LV_ALIGN_TOP_MID, 0, 112);
+  lv_obj_align(_time_label, LV_ALIGN_TOP_MID, 0, 70);
 
   _level_bar = lv_bar_create(screen);
   lv_obj_set_size(_level_bar, 280, 16);
@@ -186,7 +186,7 @@ bool Recorder::run() {
   lv_obj_set_style_bg_color(_level_bar, lv_color_hex(0x24242C), LV_PART_MAIN);
   lv_obj_set_style_bg_color(_level_bar, lv_color_hex(0x35D07F),
                             LV_PART_INDICATOR);
-  lv_obj_align(_level_bar, LV_ALIGN_TOP_MID, 0, 180);
+  lv_obj_align(_level_bar, LV_ALIGN_TOP_MID, 0, 136);
 
   _record_button = lv_button_create(screen);
   lv_obj_set_size(_record_button, 100, 100);
@@ -197,7 +197,7 @@ bool Recorder::run() {
                                 LV_PART_MAIN);
   lv_obj_set_style_shadow_width(_record_button, 22, LV_PART_MAIN);
   lv_obj_set_style_shadow_opa(_record_button, LV_OPA_40, LV_PART_MAIN);
-  lv_obj_align(_record_button, LV_ALIGN_TOP_MID, 0, 218);
+  lv_obj_align(_record_button, LV_ALIGN_TOP_MID, 0, 166);
   lv_obj_add_event_cb(_record_button, buttonEvent, LV_EVENT_CLICKED, this);
 
   _record_button_label = lv_label_create(_record_button);
@@ -226,7 +226,7 @@ bool Recorder::run() {
 
   _library_button = lv_button_create(screen);
   lv_obj_set_size(_library_button, 280, 54);
-  lv_obj_align(_library_button, LV_ALIGN_TOP_MID, 0, 338);
+  lv_obj_align(_library_button, LV_ALIGN_TOP_MID, 0, 286);
   lv_obj_t *library_label = lv_label_create(_library_button);
   lv_label_set_text(library_label, "Recordings");
   lv_obj_center(library_label);

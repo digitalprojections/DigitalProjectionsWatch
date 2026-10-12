@@ -33,6 +33,10 @@ public:
 
     StatusBarIcon(const Data &data);
     ~StatusBarIcon();
+    bool getBounds(lv_area_t &area) const {
+        if (!_main_obj) return false;
+        lv_obj_get_coords(_main_obj.get(), &area); return true;
+    }
 
     bool begin(base::Context &core, lv_obj_t *parent);
     bool del(void);

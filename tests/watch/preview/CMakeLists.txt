@@ -22,3 +22,8 @@ add_executable(recorder_preview recorder_preview.cpp)
 target_include_directories(recorder_preview PRIVATE ../../../FirmWare/watch/components/Recorder)
 target_link_libraries(recorder_preview PRIVATE lvgl)
 target_compile_options(recorder_preview PRIVATE /UNDEBUG)
+
+add_executable(time_preview time_preview.cpp)
+target_include_directories(time_preview PRIVATE ../../../FirmWare/watch/components/dp_time ../../../FirmWare/watch/components/Settings/ui)
+target_link_libraries(time_preview PRIVATE lvgl)
+target_compile_options(time_preview PRIVATE /UNDEBUG)

@@ -5,6 +5,7 @@
  */
 
 #include "system_status.hpp"
+#include "TimeService.h"
 
 #include <algorithm>
 #include <atomic>
@@ -570,6 +571,7 @@ private:
                 portEXIT_CRITICAL(&_snapshot_lock);
             }
 
+            dpwatch::pollTimeService(next.wifi_connected);
             updateStatusBar(next);
             if (_running.load()) {
                 vTaskDelay(pdMS_TO_TICKS(_refresh_period_ms));

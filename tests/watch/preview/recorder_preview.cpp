@@ -33,13 +33,15 @@ int main(int argc, char **argv) {
     assert(lv_obj_get_height(view.rows[i]) >= 46);
     lv_area_t a;
     lv_obj_get_coords(view.rows[i], &a);
-    assert(a.x1 >= 0 && a.x2 < 410 && a.y1 >= 95 && a.y2 < 359);
+    assert(a.x1 >= 0 && a.x2 < 410 && a.y1 >= 65 && a.y2 < 329);
     lv_obj_send_event(view.rows[i], LV_EVENT_CLICKED, nullptr);
   }
   assert(clicks == 5);
   lv_area_t a;
   lv_obj_get_coords(view.stop, &a);
   assert(a.y2 < 502);
+  lv_obj_set_height(view.root,454);lv_obj_update_layout(view.root);
+  lv_obj_get_coords(view.stop,&a);assert(a.y2<454);
   lv_refr_now(d);
   auto *f = std::fopen(argc > 1 ? argv[1] : "recorder-preview.ppm", "wb");
   if (!f)
