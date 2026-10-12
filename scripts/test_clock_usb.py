@@ -14,7 +14,7 @@ def main():
  def clock():
   s=cmd('clock');lines=[l for l in s.splitlines() if l.startswith('CLOCK ')];assert lines,'No clock status';return dict(re.findall(r'(\w+)=([^ ]+)',lines[-1]))
  def bounds():
-  s=cmd('clock ui');lines=[l for l in s.splitlines() if l.startswith('CLOCK_UI ')];assert lines,'No layout diagnostic';d=dict(re.findall(r'(\w+)=([^ ]+)',lines[-1]));assert d['visible']=='1' and d['safe']=='1',d;return d
+  s=cmd('clock ui');lines=[l for l in s.splitlines() if l.startswith('CLOCK_UI ')];assert lines,'No layout diagnostic';d=dict(re.findall(r'(\w+)=([^ ]+)',lines[-1]));assert d['visible']=='1' and d['safe']=='1',d;coords=list(map(int,d['clock'].split(',')));assert abs((coords[0]+coords[2])/2-205)<=2,d;return d
  try:
   raw.extend(collect(port,1));apps=cmd('watch',1);ids={name:int(i) for i,name in re.findall(r'APP (\d+) ([^\r\n]+)',apps)}
   deadline=time.monotonic()+95

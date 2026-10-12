@@ -120,13 +120,13 @@ public:
       lv_obj_add_state(sync, LV_STATE_DISABLED);
   }
   void selectZone(unsigned index) {
-    if (picker && index < timeZoneCount) {
+    if (root && picker && index < timeZoneCount) {
       lv_dropdown_set_selected(picker, index);
       lv_obj_send_event(picker, LV_EVENT_VALUE_CHANGED, nullptr);
     }
   }
   void syncNow() {
-    if (sync)
+    if (root && sync)
       lv_obj_send_event(sync, LV_EVENT_CLICKED, nullptr);
   }
   void close() {

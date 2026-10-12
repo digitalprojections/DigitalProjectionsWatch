@@ -1,6 +1,6 @@
 # Internet time and the top status bar
 
-Digital Projections Watch 0.1.7 synchronizes its date and time automatically when Wi-Fi obtains an IP address. Open Settings > Date & time to select a time zone or request Sync now. The selected zone is saved, applies throughout the system and defaults to Japan on an unconfigured watch.
+Digital Projections Watch 0.1.8 synchronizes its date and time automatically when Wi-Fi obtains an IP address. Open Settings > Date & time to select a time zone or request Sync now. The selected zone is saved, applies throughout the system and defaults to Japan on an unconfigured watch.
 
 The watch queries pool.ntp.org and retries with Google and Cloudflare time servers if a synchronization attempt times out. The time page distinguishes waiting for Wi-Fi, synchronizing, synchronized, unavailable and error. A failed attempt times out after 30 seconds and retries after 60 seconds; the underlying SNTP client refreshes hourly.
 

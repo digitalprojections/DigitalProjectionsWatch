@@ -603,10 +603,15 @@ bool StatusBar::updateClockByNewData(void)
     ESP_UTILS_LOGD("Update clock(0x%p)", this);
     ESP_UTILS_CHECK_FALSE_RETURN(checkClockInitialized(), false, "Not initialized");
 
-    if (_is_clock_out_of_area) {
-        _is_clock_out_of_area = false;
-        lv_obj_clear_flag(_clock_obj.get(), LV_OBJ_FLAG_HIDDEN);
+    // The first bounds check can run before the parent's flex layout settles.
+    // Hidden children are excluded from flex layout, so reveal and lay out first.
+    _is_clock_out_of_area = false;
+    lv_obj_clear_flag(_clock_obj.get(), LV_OBJ_FLAG_HIDDEN);
+    for (auto *label : {_clock_hour_label.get(), _clock_dot_label.get(),
+                       _clock_min_label.get(), _clock_period_label.get()}) {
+        lv_obj_set_style_text_font(label, (lv_font_t *)_data.main.text_font.font_resource, 0);
     }
+    lv_obj_update_layout(_main_obj.get());
     if (esp_brookesia_core_utils_check_obj_out_of_parent(_clock_obj.get())) {
         _is_clock_out_of_area = true;
         lv_obj_add_flag(_clock_obj.get(), LV_OBJ_FLAG_HIDDEN);

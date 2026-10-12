@@ -52,6 +52,7 @@ int main(int argc, char **argv) {
   }
   std::fclose(f);
   view.close();view.close();
+  view.selectZone(0);view.syncNow();assert(selectedZone==2&&starts==1);
   for(int i=0;i<30;++i){view.open(body,nullptr,nullptr,nullptr);view.close();assert(lv_obj_get_child_count(body)==0);}
   puts("Time view: offline/loading/success action gates, timezone selection, top safe bounds and 30 open-close cycles passed");
   return 0;

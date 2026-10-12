@@ -538,7 +538,7 @@ void update_status_bar_clock(lv_timer_t *timer)
 
 extern "C" void app_main(void)
 {
-    ESP_UTILS_LOGI("Starting Digital Projections Watch 0.1.7");
+    ESP_UTILS_LOGI("Starting Digital Projections Watch 0.1.8");
     lv_display_t *display = start_brookesia_display();
     ESP_UTILS_CHECK_NULL_EXIT(display, "Start display failed");
 
