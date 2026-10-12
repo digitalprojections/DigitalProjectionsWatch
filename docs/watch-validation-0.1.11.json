@@ -1,0 +1,117 @@
+{
+  "version": "0.1.11",
+  "source_commit": "7f28d98c32fac21d17b8803ed38586a4152b6e5d",
+  "app_sha256": "527be6e2fe5e34f12deff0b2bdeb40555e9966751f05a6f8dfbe476070791e72",
+  "flash_digest_verified": true,
+  "host_rules": "passed",
+  "host_lvgl_timezone_first_last_drag_pointer_back_refresh": "passed",
+  "physical_japan_selection": "user confirmed",
+  "clock_usb": [
+    {
+      "internet_time": {
+        "state": "2",
+        "source": "2",
+        "valid": "1",
+        "online": "1",
+        "zone": "0",
+        "epoch": "1791789993",
+        "local": "2026-10-12T16:26:33+0900",
+        "rtc_available": "1",
+        "rtc_saved": "1",
+        "rtc_epoch": "1791789930",
+        "last_sync": "1791789930",
+        "error": "ESP_OK",
+        "rtc_error": "ESP_OK"
+      },
+      "host_utc_delta_seconds": 1
+    },
+    {
+      "utc_zone_ui": {
+        "state": "2",
+        "source": "2",
+        "valid": "1",
+        "online": "1",
+        "zone": "2",
+        "epoch": "1791789998",
+        "local": "2026-10-12T07:26:38+0000",
+        "rtc_available": "1",
+        "rtc_saved": "1",
+        "rtc_epoch": "1791789930",
+        "last_sync": "1791789930",
+        "error": "ESP_OK",
+        "rtc_error": "ESP_OK"
+      }
+    },
+    {
+      "japan_zone_ui": {
+        "state": "2",
+        "source": "2",
+        "valid": "1",
+        "online": "1",
+        "zone": "0",
+        "epoch": "1791790000",
+        "local": "2026-10-12T16:26:40+0900",
+        "rtc_available": "1",
+        "rtc_saved": "1",
+        "rtc_epoch": "1791789930",
+        "last_sync": "1791789930",
+        "error": "ESP_OK",
+        "rtc_error": "ESP_OK"
+      }
+    },
+    {
+      "settings_top_bar": {
+        "visible": "1",
+        "safe": "1",
+        "clock": "181,13,228,35",
+        "battery": "291,12,369,35",
+        "wifi": "40,12,63,35"
+      }
+    },
+    {
+      "app": "2048",
+      "top_bar": {
+        "visible": "1",
+        "safe": "1",
+        "clock": "181,13,228,35",
+        "battery": "291,12,369,35",
+        "wifi": "40,12,63,35"
+      }
+    },
+    {
+      "app": "Recorder",
+      "top_bar": {
+        "visible": "1",
+        "safe": "1",
+        "clock": "181,13,228,35",
+        "battery": "291,12,369,35",
+        "wifi": "40,12,63,35"
+      }
+    },
+    {
+      "app": "GravitySphere",
+      "top_bar": {
+        "visible": "1",
+        "safe": "1",
+        "clock": "181,13,228,35",
+        "battery": "291,12,369,35",
+        "wifi": "40,12,63,35"
+      }
+    }
+  ],
+  "ai_chat": {
+    "states": [
+      {
+        "state": 4,
+        "free_internal": 37839,
+        "largest_internal": 21504,
+        "free_psram": 4320580
+      }
+    ],
+    "audio_ready": true,
+    "audio_allocation_failed": false,
+    "crash": false
+  },
+  "clock_after_ai_utc_delta_seconds": 3,
+  "ai_spoken_request": "User reports Ready with no response; unresolved. User requested OpenAI alternative."
+}

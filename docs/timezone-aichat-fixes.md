@@ -19,4 +19,4 @@ Version 0.1.10 was installed with a matching digest and AI Chat reached Ready (s
 
 The subsequent cross-app clock check caught a nine-hour UTC shift. The vendor AI service client added its provider timezone offset to system time. Version 0.1.11 disables `XIAOZHI_SYNC_SYSTEM_TIME_FROM_SERVER`, leaving dp_time as the shared UTC clock owner.
 
-Final 0.1.11 hardware verification is pending.
+Version 0.1.11 was installed with a matching digest. Internet UTC, Japan/UTC saved UI callbacks and status-bar bounds passed. AI Chat again reached Ready with its audio processor initialized and no allocation failure; the UTC clock remained correct after connecting. The user confirmed Japan is selectable by touch. The user reports spoken requests stay on Ready with no response; successful voice interaction remains unresolved, and an OpenAI alternative was requested. See `watch-validation-0.1.11.json`.
