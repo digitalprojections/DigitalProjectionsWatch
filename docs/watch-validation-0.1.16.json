@@ -1,0 +1,82 @@
+{
+  "result": "passed",
+  "cycles": [
+    {
+      "off": {
+        "state": "off",
+        "brightness": "100",
+        "consumes_boot": "1",
+        "error": "ESP_OK"
+      },
+      "on": {
+        "state": "on",
+        "brightness": "100",
+        "consumes_boot": "0",
+        "error": "ESP_OK"
+      }
+    },
+    {
+      "off": {
+        "state": "off",
+        "brightness": "100",
+        "consumes_boot": "1",
+        "error": "ESP_OK"
+      },
+      "on": {
+        "state": "on",
+        "brightness": "100",
+        "consumes_boot": "0",
+        "error": "ESP_OK"
+      }
+    },
+    {
+      "off": {
+        "state": "off",
+        "brightness": "100",
+        "consumes_boot": "1",
+        "error": "ESP_OK"
+      },
+      "on": {
+        "state": "on",
+        "brightness": "100",
+        "consumes_boot": "0",
+        "error": "ESP_OK"
+      }
+    },
+    {
+      "off": {
+        "state": "off",
+        "brightness": "100",
+        "consumes_boot": "1",
+        "error": "ESP_OK"
+      },
+      "on": {
+        "state": "on",
+        "brightness": "100",
+        "consumes_boot": "0",
+        "error": "ESP_OK"
+      }
+    },
+    {
+      "off": {
+        "state": "off",
+        "brightness": "100",
+        "consumes_boot": "1",
+        "error": "ESP_OK"
+      },
+      "on": {
+        "state": "on",
+        "brightness": "100",
+        "consumes_boot": "0",
+        "error": "ESP_OK"
+      }
+    }
+  ],
+  "version": "0.1.16",
+  "source_commit": "82a51b39b817c1d3b90b160b2ff8293a88486f2b",
+  "app_sha256": "c14794103faa8ea13f61579a042265674c0f9a3a98621c5d81ca990f5c0489a1",
+  "flash_digest_verified": true,
+  "host_tests": "Passed existing suite plus PWR tap/bounce/hold/startup/timer-wrap checks",
+  "physical_pwr": "pending user test",
+  "behavior": "Brief PWR release toggles AMOLED output globally; touch/BOOT wake and BOOT app controls retained"
+}
