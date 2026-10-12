@@ -21,3 +21,5 @@ print(ROOT/'.build/recorder-preview.png')
 subprocess.run([str(BUILD/'Release/time_preview.exe'),str(BUILD/'time-preview.ppm')],check=True)
 Image.open(BUILD/'time-preview.ppm').save(ROOT/'.build/time-preview.png')
 print(ROOT/'.build/time-preview.png')
+
+subprocess.run([str(BUILD/"Release/wristlink_preview.exe")],check=True)

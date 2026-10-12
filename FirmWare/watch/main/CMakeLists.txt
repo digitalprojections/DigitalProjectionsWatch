@@ -15,6 +15,7 @@ idf_component_register(
         dp_connectivity
         dp_time
         dp_motion
+        dp_wristlink
         dp_watch_2048
         dp_watch_board
         Gravitysphere
