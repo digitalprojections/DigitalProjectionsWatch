@@ -3,6 +3,7 @@ import argparse
 import asyncio
 import json
 from bleak import BleakScanner, BleakClient
+from bleak.exc import BleakError
 
 async def check(name):
     device = await BleakScanner.find_device_by_filter(
@@ -36,4 +37,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--name', help='Exact advertised name when more than one watch is nearby')
     args = parser.parse_args()
-    asyncio.run(check(args.name))
+    try:
+        asyncio.run(asyncio.wait_for(check(args.name), timeout=45))
+    except BleakError as error:
+        raise SystemExit("Bluetooth check unavailable: " + str(error)) from None
+    except asyncio.TimeoutError:
+        raise SystemExit("Bluetooth check timed out after 45 seconds.") from None

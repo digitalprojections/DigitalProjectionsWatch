@@ -29,7 +29,7 @@ int phoneSetup(int argc, char **argv) {
   esp_lv_adapter_unlock();
  } else if(argc!=1)return 1;
  const auto s=dpwatch::phoneSetupSnapshot();
- std::printf("PHONE_SETUP state=%u can_start=%d can_stop=%d free_internal=%u\n",static_cast<unsigned>(s.state),s.canStart,s.canStop,static_cast<unsigned>(heap_caps_get_free_size(MALLOC_CAP_INTERNAL)));
+ std::printf("PHONE_SETUP state=%u can_start=%d can_stop=%d free_internal=%u largest_internal=%u\n",static_cast<unsigned>(s.state),s.canStart,s.canStop,static_cast<unsigned>(heap_caps_get_free_size(MALLOC_CAP_INTERNAL)),static_cast<unsigned>(heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL)));
  return 0;
 }
 int calibrate(int, char **) { dpwatch::requestMotionCalibration(); std::puts("Calibration requested; keep flat and still."); return 0; }

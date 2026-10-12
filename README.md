@@ -2,7 +2,7 @@
 
 An extensible watch system for the ESP32-S3 with a 2.06-inch 410 x 502 AMOLED display.
 
-Version 0.1.3 adds phone-based Wi-Fi setup over Bluetooth Low Energy. Enter the network password on Android instead of the watch keyboard. See [phone setup instructions](docs/phone-wifi-setup.md). Host state and UI tests passed; hardware provisioning verification is in progress.
+Version 0.1.4 adds phone-based Wi-Fi setup over Bluetooth Low Energy. Enter the network password on Android instead of the watch keyboard. See [phone setup instructions](docs/phone-wifi-setup.md). Host state and UI tests passed; hardware provisioning verification is in progress.
 
 The installed 0.1.2 swipe-control release passed firmware digest and launch checks. Shared motion calibration, reboot persistence, SD read/write, and physical BOOT controls were verified in 0.1.1. See [0.1.2 validation evidence](docs/watch-validation-0.1.2.json) and [0.1.1 hardware evidence](docs/watch-validation-0.1.1.json).
 

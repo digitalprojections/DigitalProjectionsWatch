@@ -1,6 +1,6 @@
 # Phone Wi-Fi setup
 
-Digital Projections Watch 0.1.3 adds on-demand Bluetooth Low Energy provisioning for 2.4 GHz Wi-Fi. The existing manual password entry remains available.
+Digital Projections Watch 0.1.4 adds on-demand Bluetooth Low Energy provisioning for 2.4 GHz Wi-Fi. The existing manual password entry remains available.
 
 1. Install [ESP BLE Provisioning by Espressif](https://play.google.com/store/apps/details?id=com.espressif.provble) on Android.
 2. Open **Settings > Bluetooth > Start phone setup** on the watch. There is also a **Set up with phone** shortcut in Wi-Fi settings.
