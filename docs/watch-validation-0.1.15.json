@@ -1,0 +1,82 @@
+{
+  "result": "passed",
+  "cycles": [
+    {
+      "off": {
+        "state": "off",
+        "brightness": "100",
+        "consumes_boot": "1",
+        "error": "ESP_OK"
+      },
+      "on": {
+        "state": "on",
+        "brightness": "100",
+        "consumes_boot": "0",
+        "error": "ESP_OK"
+      }
+    },
+    {
+      "off": {
+        "state": "off",
+        "brightness": "100",
+        "consumes_boot": "1",
+        "error": "ESP_OK"
+      },
+      "on": {
+        "state": "on",
+        "brightness": "100",
+        "consumes_boot": "0",
+        "error": "ESP_OK"
+      }
+    },
+    {
+      "off": {
+        "state": "off",
+        "brightness": "100",
+        "consumes_boot": "1",
+        "error": "ESP_OK"
+      },
+      "on": {
+        "state": "on",
+        "brightness": "100",
+        "consumes_boot": "0",
+        "error": "ESP_OK"
+      }
+    },
+    {
+      "off": {
+        "state": "off",
+        "brightness": "100",
+        "consumes_boot": "1",
+        "error": "ESP_OK"
+      },
+      "on": {
+        "state": "on",
+        "brightness": "100",
+        "consumes_boot": "0",
+        "error": "ESP_OK"
+      }
+    },
+    {
+      "off": {
+        "state": "off",
+        "brightness": "100",
+        "consumes_boot": "1",
+        "error": "ESP_OK"
+      },
+      "on": {
+        "state": "on",
+        "brightness": "100",
+        "consumes_boot": "0",
+        "error": "ESP_OK"
+      }
+    }
+  ],
+  "version": "0.1.15",
+  "source_commit": "f9b69dcdd17805394d0a7a6990c3059e586f70dd",
+  "app_sha256": "678b667b7380774f9db8644ae20db3315850e6df5c140267544181c641f0068e",
+  "flash_digest_verified": true,
+  "host_sleep_wake_tests": "passed",
+  "physical_panel_and_wake": "pending user check",
+  "scope": "Driver off/on and Settings callback verified over USB; physical emission and touch/BOOT wake remain distinct checks"
+}

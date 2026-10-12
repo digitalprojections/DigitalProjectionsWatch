@@ -2,7 +2,7 @@
 
 An extensible watch system for the ESP32-S3 with a 2.06-inch 410 x 502 AMOLED display.
 
-Version 0.1.15 adds **Settings > Display > Turn screen off**. Touch the screen or press BOOT to wake. AMOLED output is disabled while the watch keeps running, brightness is preserved, and the wake input is consumed. Host sleep/wake regression tests pass; installation and physical panel verification are pending.
+Version 0.1.15 adds **Settings > Display > Turn screen off**. Touch the screen or press BOOT to wake. AMOLED output is disabled while the watch keeps running, brightness is preserved, and the wake input is consumed. Installed with a matching app-partition flash digest. Host sleep/wake tests and five USB-driven cycles through the Settings off button passed, with brightness retained and wake input consumed. Physical screen darkness and touch/BOOT wake await user confirmation. See [validation evidence](docs/watch-validation-0.1.15.json).
 
 Version 0.1.14 adds the WristLink six-axis controller for Digital Projections console games, preserving shared calibration and providing BOOT centering/pause and a throttle slider. Watch 0.1.14 passed app-partition digest verification. Paired USB tests with WristLink Flight 1.0.2 passed motion delivery, pause, disconnect freeze and reconnect after reopening the controller. User confirmed physical steering and BOOT controls on the preceding build; comfort with assisted tuning remains a physical check.
 
