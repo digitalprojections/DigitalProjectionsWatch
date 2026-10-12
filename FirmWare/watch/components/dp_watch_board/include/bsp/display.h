@@ -3,6 +3,7 @@
 #pragma once
 #include "esp_lcd_types.h"
 #include "esp_err.h"
+#include <stdbool.h>
 
 /* LCD color formats */
 #define ESP_LCD_COLOR_FORMAT_RGB565    (1)
@@ -91,6 +92,9 @@ esp_err_t bsp_display_rotation_set(bsp_display_rotation_t rotation);
 esp_err_t bsp_display_brightness_set(int brightness_percent);
 
 int bsp_display_brightness_get(void);
+
+/** Enable or disable AMOLED output without changing its brightness. */
+esp_err_t bsp_display_power_set(bool enabled);
 
 /**
  * @brief Turn on display backlight

@@ -1,5 +1,7 @@
 #include "DisplayPage.hpp"
 #include "SettingsUI.hpp"
+#include "DisplayPower.h"
+#include <cstdio>
 #include "esp_log.h"
 #include "../Settings.hpp"
 
@@ -88,6 +90,23 @@ namespace esp_brookesia::apps
         lv_obj_set_style_pad_all(brightness_slider, 7, LV_PART_KNOB);
         lv_obj_set_style_radius(brightness_slider, LV_RADIUS_CIRCLE, LV_PART_KNOB);
         lv_obj_add_event_cb(brightness_slider, event_handler_cb, LV_EVENT_VALUE_CHANGED, this);
+        lv_obj_t *off = lv_list_add_button(list1, LV_SYMBOL_POWER, "Turn screen off");
+        power_button = off;
+        lv_obj_add_style(off, &style_list_btn, LV_PART_MAIN);
+        lv_obj_add_style(off, &style_list_btn_pressed, LV_STATE_PRESSED);
+        lv_obj_add_event_cb(off, [](lv_event_t *e) {
+            const esp_err_t result = dpwatch::turnDisplayOff();
+            lv_obj_t *button = static_cast<lv_obj_t *>(lv_event_get_target(e));
+            if(result != ESP_OK) {
+                lv_obj_t *text = settings_ui::get_button_label(button);
+                if(text) lv_label_set_text(text, "Screen off failed. Retry");
+            }
+        }, LV_EVENT_CLICKED, nullptr);
+        lv_obj_t *hint = lv_label_create(list1);
+        lv_label_set_text(hint, "Touch the screen or press BOOT to wake.");
+        lv_obj_set_width(hint, lv_pct(100));
+        lv_obj_set_style_text_font(hint, &lv_font_montserrat_20, 0);
+        lv_obj_set_style_text_color(hint, lv_color_hex(settings_ui::COLOR_SECONDARY_TEXT), 0);
         return true;
     }
 
@@ -106,6 +125,16 @@ namespace esp_brookesia::apps
         bsp_display_brightness_set(value);
     }
 
+    bool DisplayPage::diagnostic(bool activate) {
+        if(!power_button || !page_root) return false;
+        lv_obj_update_layout(page_root);
+        lv_area_t bounds{};lv_obj_get_coords(power_button, &bounds);
+        const bool safe = bounds.x1 >= 24 && bounds.x2 <= 386 && bounds.y1 >= 48 && bounds.y2 < 478;
+        printf("DISPLAY_UI safe=%d off_button=%d,%d,%d,%d\n",safe,static_cast<int>(bounds.x1),static_cast<int>(bounds.y1),static_cast<int>(bounds.x2),static_cast<int>(bounds.y2));
+        if(activate && safe)lv_obj_send_event(power_button,LV_EVENT_CLICKED,nullptr);
+        return safe;
+    }
+
     bool DisplayPage::back()
     {
         ESP_UTILS_LOGD("DisplayPage Back");
@@ -122,6 +151,7 @@ namespace esp_brookesia::apps
             page_root = nullptr;
             label = nullptr;
             list1 = nullptr;
+            power_button = nullptr;
             settings_ui::reset_list_styles(style_list, style_list_btn, style_list_text, style_list_btn_pressed);
         }
         return true;

@@ -39,7 +39,7 @@ def main():
     file=folder/Path(args.log).name;file.write_bytes(raw)
     clean=re.sub(r'\x1b\[[0-9;?]*[A-Za-z]', '',raw.decode(errors='replace'))
     for line in clean.splitlines():
-        if any(word in line for word in ['CLOCK ', 'CLOCK_UI ', 'DP:Time', 'RECORDER state=', 'PHONE_SETUP state=', 'MOTION state=', 'APP ', 'WATCH ', 'SD state=', 'SD_TEST ', 'Calibration requested', 'Guru Meditation', 'panic', 'abort()', 'Backtrace:', 'DP:Motion', 'Digital Projections Watch is ready', 'rst:']):
+        if any(word in line for word in ['DISPLAY ', 'CLOCK ', 'CLOCK_UI ', 'DP:Time', 'RECORDER state=', 'PHONE_SETUP state=', 'MOTION state=', 'APP ', 'WATCH ', 'SD state=', 'SD_TEST ', 'Calibration requested', 'Guru Meditation', 'panic', 'abort()', 'Backtrace:', 'DP:Motion', 'Digital Projections Watch is ready', 'rst:']):
             print(line)
     print('Raw log saved privately:',file)
 

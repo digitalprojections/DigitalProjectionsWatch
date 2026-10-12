@@ -5,6 +5,7 @@
 #include "Recorder.hpp"
 #include "XiaozhiApp.hpp"
 #include "WristLink.h"
+#include "DisplayPower.h"
 #include "TimeService.h"
 #include "WatchStatusGeometry.h"
 #include "storage_service.h"
@@ -61,6 +62,12 @@ int clockCommand(int argc,char**argv){
  const auto s=dpwatch::timeSnapshot();time_t t=static_cast<time_t>(s.epoch);tm date{};localtime_r(&t,&date);char local[32];strftime(local,sizeof(local),"%Y-%m-%dT%H:%M:%S%z",&date);
  printf("CLOCK state=%u source=%u valid=%d online=%d zone=%u epoch=%llu local=%s rtc_available=%d rtc_saved=%d rtc_epoch=%llu last_sync=%llu error=%s rtc_error=%s\n",static_cast<unsigned>(s.state),static_cast<unsigned>(s.source),s.valid,s.online,s.zone,static_cast<unsigned long long>(s.epoch),s.valid?local:"unavailable",s.rtcAvailable,s.rtcSaved,static_cast<unsigned long long>(s.rtcEpoch),static_cast<unsigned long long>(s.lastSync),esp_err_to_name(s.error),esp_err_to_name(s.rtcError));
  return 0;
+}
+int displayCommand(int argc,char**argv){
+ if(argc>2||esp_lv_adapter_lock(1000)!=ESP_OK)return 1;
+ esp_err_t result=ESP_OK;
+ if(argc==2){if(!strcmp(argv[1],"off"))result=dpwatch::turnDisplayOff();else if(!strcmp(argv[1],"on"))result=dpwatch::wakeDisplay();else if(!strcmp(argv[1],"page"))lv_async_call([](void*){esp_brookesia::apps::Settings::requestInstance()->showDisplayPage();},nullptr);else if(!strcmp(argv[1],"ui")||!strcmp(argv[1],"sleep_button")){if(!esp_brookesia::apps::DisplayPage::requestInstance()->diagnostic(!strcmp(argv[1],"sleep_button")))result=ESP_ERR_INVALID_STATE;}else result=ESP_ERR_INVALID_ARG;}
+ dpwatch::displayPowerDiagnostic();esp_lv_adapter_unlock();return result==ESP_OK?0:1;
 }
 int wristlinkCommand(int,char**){esp_brookesia::apps::WristLink::diagnostic();return 0;}
 int aiChatCommand(int, char**) {
@@ -148,6 +155,7 @@ void startWatchConsole(esp_brookesia::systems::phone::Phone *phone) {
     esp_console_dev_usb_serial_jtag_config_t hardware = ESP_CONSOLE_DEV_USB_SERIAL_JTAG_CONFIG_DEFAULT();
     if (esp_console_new_repl_usb_serial_jtag(&hardware, &config, &repl) != ESP_OK) return;
     const esp_console_cmd_t commands[] = {
+        {.command="display", .help="Display status/off/on/page/ui/sleep_button", .hint=nullptr, .func=displayCommand, .argtable=nullptr},
         {.command="wristlink", .help="WristLink controller status", .hint=nullptr, .func=wristlinkCommand, .argtable=nullptr},
         {.command="ai_chat", .help="AI Chat state and memory diagnostics", .hint=nullptr, .func=aiChatCommand, .argtable=nullptr},
         {.command="clock", .help="Time status/sync/page/zone INDEX/ui", .hint=nullptr, .func=clockCommand, .argtable=nullptr},

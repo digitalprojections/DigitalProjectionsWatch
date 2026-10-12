@@ -34,6 +34,7 @@ namespace esp_brookesia::apps
         void showRootPage();
         void showBluetoothPage();
         void showTimePage();
+        void showDisplayPage();
 
     protected:
         Settings(bool use_status_bar, bool use_navigation_bar);

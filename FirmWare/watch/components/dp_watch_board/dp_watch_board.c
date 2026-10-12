@@ -614,6 +614,12 @@ int bsp_display_brightness_get(void)
     return brightness * 100 / 255;
 }
 
+esp_err_t bsp_display_power_set(bool enabled)
+{
+    if (panel_handle == NULL) return ESP_ERR_INVALID_STATE;
+    return esp_lcd_panel_disp_on_off(panel_handle, enabled);
+}
+
 esp_err_t bsp_display_backlight_off(void)
 {
     ESP_LOGI(TAG, "Backlight off");

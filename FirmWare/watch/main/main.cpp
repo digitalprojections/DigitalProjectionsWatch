@@ -19,6 +19,7 @@
 #include "freertos/task.h"
 #include "nvs_flash.h"
 #include "MotionService.h"
+#include "DisplayPower.h"
 #include "watch_console.hpp"
 
 #include "Drawpanel.hpp"
@@ -538,7 +539,7 @@ void update_status_bar_clock(lv_timer_t *timer)
 
 extern "C" void app_main(void)
 {
-    ESP_UTILS_LOGI("Starting Digital Projections Watch 0.1.14");
+    ESP_UTILS_LOGI("Starting Digital Projections Watch 0.1.15");
     lv_display_t *display = start_brookesia_display();
     ESP_UTILS_CHECK_NULL_EXIT(display, "Start display failed");
 
@@ -755,6 +756,7 @@ extern "C" void app_main(void)
 
     // Wi-Fi callbacks and the status bar service are now initialized, so user
     // interaction can safely enter Settings or launch an application.
+    { LvLockGuard guard; ESP_UTILS_CHECK_FALSE_EXIT(dpwatch::startDisplayPower(), "Display power service unavailable"); }
     input_guard.enable();
     startWatchConsole(phone);
     ESP_UTILS_LOGI("Digital Projections Watch is ready");

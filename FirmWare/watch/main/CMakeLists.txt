@@ -4,7 +4,7 @@ idf_component_register(
         "watch_console.cpp"
         "display_perf_monitor.cpp"
     INCLUDE_DIRS "."
-    REQUIRES
+    REQUIRES dp_display
         brookesia_app_calculator
         bsp_extra
         ButtonTest

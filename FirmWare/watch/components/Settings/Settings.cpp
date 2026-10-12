@@ -239,6 +239,7 @@ namespace esp_brookesia::apps
         active_page = ActivePage::None;
     }
 
+    void Settings::showDisplayPage() { close_active_page(); open_page("Display"); }
     void Settings::showTimePage() { close_active_page(); open_page("Time"); }
 
     void Settings::showBluetoothPage() { close_active_page(); open_page("Bluetooth"); }

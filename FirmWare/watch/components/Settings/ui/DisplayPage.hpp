@@ -17,6 +17,7 @@ public:
     bool run() override;
     bool back() override;
     bool close() override;
+    bool diagnostic(bool activate = false);
 
 private:
     static void event_handler_cb(lv_event_t *e);
@@ -24,6 +25,7 @@ private:
     lv_obj_t *page_root;
     lv_obj_t *label;
     lv_obj_t *list1;
+    lv_obj_t *power_button = nullptr;
     lv_style_t style_list;
     lv_style_t style_list_btn;
     lv_style_t style_list_text;

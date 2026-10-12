@@ -1,4 +1,5 @@
 #include "MotionService.h"
+#include "DisplayPower.h"
 #include "bsp/esp-bsp.h"
 #include "esp_log.h"
 #include "esp_timer.h"
@@ -102,7 +103,7 @@ void run(void *) {
         if (!fresh && now - state.timestamp > 500)
             state.state = CalibrationState::Unavailable;
         state.generation = calibration.hasProfile() ? calibration.profile().generation : 0;
-        state.bootPressed = gpio_get_level(GPIO_NUM_0) == 0;
+        state.bootPressed = gpio_get_level(GPIO_NUM_0) == 0 && !displayConsumesBoot();
         publish(state);
         vTaskDelayUntil(&lastWake, pdMS_TO_TICKS(20));
     }
