@@ -1,0 +1,23 @@
+{
+  "version": "0.1.2",
+  "firmware_source_commit": "bd50c84ee5fdf89d4e2c4a786a17b438dc38c1f7",
+  "app_size_bytes": 6493248,
+  "app_sha256": "9538c36e6a1b7159495f6ff43d50cbcb026940c0cccce9c43d0c424a6cca5305",
+  "checks": {
+    "host_rules": "9962 checks passed",
+    "calibration_regressions": "passed unchanged",
+    "swipe_rules": "four directions, threshold, tap rejection, diagonal rejection, cancellation and one move per contact passed",
+    "lvgl_pointer_journey": "four swipe directions over tile widgets, taps, diagonals, pause/resume, cancelled contact, new game and 30 reopen cycles passed",
+    "preview": "410x502 host render visually inspected; host LVGL 9.3, firmware LVGL 9.5",
+    "idf_build": "ESP-IDF 5.5.4 passed",
+    "flash_verification": "installed app digest matched; original backup and live partition table verified before update",
+    "physical_touch": "pending",
+    "device_launch": "USB watch open 5 returned active_id=5, free_internal=56391",
+    "calibration_preserved": "ready generation 1 after update and reboot"
+  },
+  "remaining_checks": [
+    "all media/audio app journeys",
+    "AI account and network conversation flows",
+    "full original-firmware restore procedure"
+  ]
+}

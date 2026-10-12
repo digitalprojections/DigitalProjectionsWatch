@@ -2,7 +2,7 @@
 
 An extensible watch system for the ESP32-S3 with a 2.06-inch 410 x 502 AMOLED display.
 
-Version 0.1.2 switches 2048 to touchscreen swipes. Host rules and LVGL pointer-input tests passed; installation and physical swipe confirmation are pending. Shared motion calibration, reboot persistence, SD read/write, and physical BOOT controls were verified in 0.1.1. Media/audio and AI account journeys remain unverified. See [prior validation evidence](docs/watch-validation-0.1.1.json).
+Version 0.1.2 switches 2048 to touchscreen swipes. Host rules and LVGL pointer-input tests passed; the installed app passed flash digest verification and launches on the watch. Physical swipe confirmation is pending. Shared motion calibration, reboot persistence, SD read/write, and physical BOOT controls were verified in 0.1.1. Media/audio and AI account journeys remain unverified. See [0.1.2 validation evidence](docs/watch-validation-0.1.2.json) and [0.1.1 hardware evidence](docs/watch-validation-0.1.1.json).
 
 ## Applications
 
