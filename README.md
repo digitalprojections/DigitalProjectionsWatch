@@ -2,6 +2,8 @@
 
 An extensible watch system for the ESP32-S3 with a 2.06-inch 410 x 502 AMOLED display.
 
+Version 0.1.10 fixes the clipped timezone menu with a bounded scrollable panel and moves AI Chat audio worker stacks into PSRAM. Hardware validation is pending.
+
 Version 0.1.9 adds automatic internet date/time, a saved timezone selector in **Settings > Date & time**, and a centered top clock with safe margins for the rounded corners. Version 0.1.9 is installed with a matching flash digest. Internet time, UTC/Japan selection, RTC reboot recovery, persistent top-bar bounds and recorder playback passed over USB. See [internet time](docs/internet-time.md) and [validation evidence](docs/watch-validation-0.1.9.json).
 
 Version 0.1.6 added a recordings library and on-watch WAV playback. Open **Recorder > Recordings**, tap a recording to play it, and use **Stop** to end playback. **Older** browses additional files; the back arrow returns to recording. Recordings are streamed from SD without loading the whole file into memory. Version 0.1.6 is installed with a matching flash digest. Full playback, repeated stop/replay, and exit/reopen passed over USB; the user confirmed correct sound and the physical Stop control. See [validation evidence](docs/watch-validation-0.1.6.json).

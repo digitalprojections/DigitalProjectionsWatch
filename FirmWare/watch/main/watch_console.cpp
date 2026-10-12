@@ -3,6 +3,7 @@
 #include "PhoneSetup.h"
 #include "Settings.hpp"
 #include "Recorder.hpp"
+#include "XiaozhiApp.hpp"
 #include "TimeService.h"
 #include "WatchStatusGeometry.h"
 #include "storage_service.h"
@@ -59,6 +60,14 @@ int clockCommand(int argc,char**argv){
  const auto s=dpwatch::timeSnapshot();time_t t=static_cast<time_t>(s.epoch);tm date{};localtime_r(&t,&date);char local[32];strftime(local,sizeof(local),"%Y-%m-%dT%H:%M:%S%z",&date);
  printf("CLOCK state=%u source=%u valid=%d online=%d zone=%u epoch=%llu local=%s rtc_available=%d rtc_saved=%d rtc_epoch=%llu last_sync=%llu error=%s rtc_error=%s\n",static_cast<unsigned>(s.state),static_cast<unsigned>(s.source),s.valid,s.online,s.zone,static_cast<unsigned long long>(s.epoch),s.valid?local:"unavailable",s.rtcAvailable,s.rtcSaved,static_cast<unsigned long long>(s.rtcEpoch),static_cast<unsigned long long>(s.lastSync),esp_err_to_name(s.error),esp_err_to_name(s.rtcError));
  return 0;
+}
+int aiChatCommand(int, char**) {
+    auto *app=esp_brookesia::apps::XiaozhiApp::requestInstance();
+    printf("AI_CHAT state=%u free_internal=%u largest_internal=%u free_psram=%u\n",
+           app->diagnosticState(), static_cast<unsigned>(heap_caps_get_free_size(MALLOC_CAP_INTERNAL|MALLOC_CAP_8BIT)),
+           static_cast<unsigned>(heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL|MALLOC_CAP_8BIT)),
+           static_cast<unsigned>(heap_caps_get_free_size(MALLOC_CAP_SPIRAM|MALLOC_CAP_8BIT)));
+    return 0;
 }
 int recorder(int argc, char **argv) {
     if(argc>2 || esp_lv_adapter_lock(1000)!=ESP_OK)return 1;
@@ -137,6 +146,7 @@ void startWatchConsole(esp_brookesia::systems::phone::Phone *phone) {
     esp_console_dev_usb_serial_jtag_config_t hardware = ESP_CONSOLE_DEV_USB_SERIAL_JTAG_CONFIG_DEFAULT();
     if (esp_console_new_repl_usb_serial_jtag(&hardware, &config, &repl) != ESP_OK) return;
     const esp_console_cmd_t commands[] = {
+        {.command="ai_chat", .help="AI Chat state and memory diagnostics", .hint=nullptr, .func=aiChatCommand, .argtable=nullptr},
         {.command="clock", .help="Time status/sync/page/zone INDEX/ui", .hint=nullptr, .func=clockCommand, .argtable=nullptr},
         {.command="recorder", .help="Recorder UI status/library/play1..5/stop/back/older/record", .hint=nullptr, .func=recorder, .argtable=nullptr},
         {.command="phone_setup", .help="Bluetooth Wi-Fi setup status/start/stop/page", .hint=nullptr, .func=phoneSetup, .argtable=nullptr},

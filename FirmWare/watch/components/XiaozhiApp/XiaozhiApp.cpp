@@ -5,6 +5,7 @@
  */
 
 #include "XiaozhiApp.hpp"
+#include "AiChatFailure.h"
 #include "chat_history.h"
 #include "XiaozhiActivationClient.hpp"
 #include "XiaozhiActivationPrompt.hpp"
@@ -629,6 +630,7 @@ void XiaozhiApp::refreshUi()
     char role[sizeof(_chat_role)] = {};
     char text[sizeof(_chat_text)] = {};
     char emotion[sizeof(_emotion)] = {};
+    char error[sizeof(_error_detail)] = {};
     if (!_state_mutex ||
             xSemaphoreTake(_state_mutex, pdMS_TO_TICKS(20)) != pdTRUE) {
         return;
@@ -638,11 +640,12 @@ void XiaozhiApp::refreshUi()
     memcpy(role, _chat_role, sizeof(role));
     memcpy(text, _chat_text, sizeof(text));
     memcpy(emotion, _emotion, sizeof(emotion));
+    memcpy(error, _error_detail, sizeof(error));
     xSemaphoreGive(_state_mutex);
 
     State state = _state.load();
     _ui->setNetworkReady(_network_ready.load());
-    _ui->setStatus(stateText(state));
+    _ui->setStatus(state == State::Error && error[0] ? error : stateText(state));
     _ui->setChatMessage(role, text);
     _ui->setEmotion(emotion[0] ? emotion : "neutral");
     _ui->setActivation(
@@ -664,6 +667,11 @@ void XiaozhiApp::setError(esp_err_t error, const char *source)
     ESP_UTILS_LOGE(
         "%s: %s", source ? source : "Xiaozhi", esp_err_to_name(error)
     );
+    if (_state_mutex && xSemaphoreTake(_state_mutex, pdMS_TO_TICKS(20)) == pdTRUE) {
+        copyString(_error_detail, sizeof(_error_detail),
+                   dpwatch::aiChatFailureMessage(error == ESP_ERR_NO_MEM, source));
+        xSemaphoreGive(_state_mutex);
+    }
     if (_network_ready.load()) {
         setState(State::Error);
     }
@@ -1854,14 +1862,15 @@ bool XiaozhiApp::ensureAudioReady()
         )
     );
     _input_task_running.store(true);
-    if (xTaskCreatePinnedToCore(
+    if (xTaskCreatePinnedToCoreWithCaps(
             inputTaskEntry,
             "xiaozhi_input",
             INPUT_TASK_STACK_SIZE,
             this,
             8,
             &_input_task,
-            0
+            0,
+            MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT
         ) != pdPASS) {
         _input_task_running.store(false);
         setError(ESP_ERR_NO_MEM, "Create Xiaozhi input task");
@@ -2714,7 +2723,7 @@ void XiaozhiApp::inputAudio()
         );
         postControlEvent(event);
         _input_task_running.store(false);
-        vTaskDelete(nullptr);
+        vTaskDeleteWithCaps(nullptr);
         return;
     }
     while (_audio_tasks_running.load()) {
@@ -2835,7 +2844,7 @@ void XiaozhiApp::inputAudio()
     free(device_planar);
     free(device_tdm);
     _input_task_running.store(false);
-    vTaskDelete(nullptr);
+    vTaskDeleteWithCaps(nullptr);
 }
 
 void XiaozhiApp::encodeAudio()

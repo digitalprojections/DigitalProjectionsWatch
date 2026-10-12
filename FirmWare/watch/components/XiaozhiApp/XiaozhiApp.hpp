@@ -31,6 +31,7 @@ class XiaozhiApp: public systems::phone::App {
 public:
     static XiaozhiApp *requestInstance(bool use_status_bar = false, bool use_navigation_bar = false);
     ~XiaozhiApp();
+    unsigned diagnosticState() const { return static_cast<unsigned>(_state.load()); }
 
 protected:
     XiaozhiApp(bool use_status_bar, bool use_navigation_bar);
@@ -224,6 +225,7 @@ private:
 
     char _activation_code[64] = {};
     char _activation_message[192] = {};
+    char _error_detail[160] = {};
     char _chat_role[16] = {};
     char _chat_text[512] = {};
     char _emotion[32] = {"neutral"};

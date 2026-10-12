@@ -15,7 +15,7 @@ struct TimeViewData {
 class TimeView {
   lv_obj_t *root = nullptr, *clock = nullptr, *date = nullptr,
            *picker = nullptr, *status = nullptr, *detail = nullptr,
-           *sync = nullptr;
+           *sync = nullptr, *zoneLabel = nullptr, *zonePanel = nullptr;
   bool canSync = false;
   void (*onSync)(void *) = nullptr;
   void (*onZone)(void *, unsigned) = nullptr;
@@ -29,10 +29,62 @@ class TimeView {
       self->onSync(self->user);
     }
   }
-  static void selected(lv_event_t *event) {
-    auto *self = static_cast<TimeView *>(lv_event_get_user_data(event));
-    if (self->onZone)
-      self->onZone(self->user, lv_dropdown_get_selected(self->picker));
+  void dismissZones() {
+    if (zonePanel)
+      lv_obj_delete(zonePanel);
+    zonePanel = nullptr;
+  }
+  static void dismiss(lv_event_t *e) {
+    static_cast<TimeView *>(lv_event_get_user_data(e))->dismissZones();
+  }
+  static void choose(lv_event_t *e) {
+    auto *self = static_cast<TimeView *>(lv_event_get_user_data(e));
+    unsigned index = static_cast<unsigned>(reinterpret_cast<uintptr_t>(
+        lv_obj_get_user_data(lv_event_get_target_obj(e))));
+    self->selectZone(index);
+    self->dismissZones();
+  }
+  static void showZones(lv_event_t *e) {
+    auto *self = static_cast<TimeView *>(lv_event_get_user_data(e));
+    if (self->zonePanel)
+      return;
+    auto *panel = self->zonePanel = lv_obj_create(self->root);
+    lv_obj_remove_style_all(panel);
+    lv_obj_add_flag(panel, LV_OBJ_FLAG_IGNORE_LAYOUT);
+    lv_obj_set_size(panel, lv_obj_get_width(self->root), lv_obj_get_height(self->root));
+    lv_obj_set_pos(panel, -12, -12);
+    lv_obj_set_style_bg_color(panel, lv_color_black(), 0);
+    lv_obj_set_style_bg_opa(panel, LV_OPA_COVER, 0);
+    lv_obj_set_style_pad_all(panel, 12, 0);
+    lv_obj_set_style_pad_left(panel, 24, 0);
+    lv_obj_set_style_pad_right(panel, 24, 0);
+    lv_obj_set_style_pad_bottom(panel, 28, 0);
+    lv_obj_set_style_pad_row(panel, 8, 0);
+    lv_obj_set_flex_flow(panel, LV_FLEX_FLOW_COLUMN);
+    lv_obj_remove_flag(panel, LV_OBJ_FLAG_SCROLLABLE);
+    auto *back = lv_button_create(panel);
+    lv_obj_set_size(back, LV_PCT(100), 48);
+    auto *title = lv_label_create(back);
+    lv_label_set_text(title, LV_SYMBOL_LEFT "  Time zones");
+    lv_obj_center(title);
+    lv_obj_add_event_cb(back, dismiss, LV_EVENT_CLICKED, self);
+    auto *list = lv_obj_create(panel);
+    lv_obj_remove_style_all(list);
+    lv_obj_set_width(list, LV_PCT(100));
+    lv_obj_set_flex_grow(list, 1);
+    lv_obj_set_flex_flow(list, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_style_pad_row(list, 6, 0);
+    lv_obj_set_scroll_dir(list, LV_DIR_VER);
+    for (unsigned i = 0; i < timeZoneCount; ++i) {
+      auto *row = lv_button_create(list);
+      lv_obj_set_size(row, LV_PCT(100), 54);
+      lv_obj_set_user_data(row,
+                           reinterpret_cast<void *>(static_cast<uintptr_t>(i)));
+      auto *label = lv_label_create(row);
+      lv_label_set_text(label, timeZones[i].name);
+      lv_obj_center(label);
+      lv_obj_add_event_cb(row, choose, LV_EVENT_CLICKED, self);
+    }
   }
 
 public:
@@ -65,16 +117,11 @@ public:
     lv_obj_set_style_text_font(clock, &lv_font_montserrat_32, 0);
     date = label("Date unavailable");
     label("Time zone");
-    picker = lv_dropdown_create(root);
+    picker = lv_button_create(root);
     lv_obj_set_size(picker, 330, 48);
-    std::string options;
-    for (unsigned i = 0; i < timeZoneCount; ++i) {
-      if (i)
-        options += '\n';
-      options += timeZones[i].name;
-    }
-    lv_dropdown_set_options(picker, options.c_str());
-    lv_obj_add_event_cb(picker, selected, LV_EVENT_VALUE_CHANGED, this);
+    zoneLabel = lv_label_create(picker);
+    lv_obj_center(zoneLabel);
+    lv_obj_add_event_cb(picker, showZones, LV_EVENT_CLICKED, this);
     status = label("Waiting for Wi-Fi");
     lv_obj_set_style_text_font(status, &lv_font_montserrat_18, 0);
     detail = label("Connect Wi-Fi to synchronize");
@@ -91,7 +138,8 @@ public:
     lv_label_set_text(clock, d.clock);
     lv_label_set_text(date, d.date);
     lv_label_set_text(detail, d.detail);
-    lv_dropdown_set_selected(picker, d.zone);
+    lv_label_set_text(zoneLabel,
+                      timeZones[d.zone < timeZoneCount ? d.zone : 0].name);
     const char *text = "Waiting for Wi-Fi";
     switch (d.state) {
     case TimeState::Loading:
@@ -121,8 +169,9 @@ public:
   }
   void selectZone(unsigned index) {
     if (root && picker && index < timeZoneCount) {
-      lv_dropdown_set_selected(picker, index);
-      lv_obj_send_event(picker, LV_EVENT_VALUE_CHANGED, nullptr);
+      lv_label_set_text(zoneLabel, timeZones[index].name);
+      if (onZone)
+        onZone(user, index);
     }
   }
   void syncNow() {
@@ -133,6 +182,7 @@ public:
     if (root)
       lv_obj_delete(root);
     root = nullptr;
+    zonePanel = nullptr;
     canSync = false;
   }
 };

@@ -11,6 +11,8 @@
 #include <utility>
 
 #include "esp_log.h"
+#include "esp_heap_caps.h"
+#include "freertos/idf_additions.h"
 #include "esp_partition.h"
 #include "esp_vadn_models.h"
 
@@ -116,13 +118,15 @@ bool XiaozhiAudioProcessor::initialize()
             EVENT_TASK_EXITED
     );
 
-    BaseType_t created = xTaskCreate(
+    // Audio stacks belong in PSRAM; internal RAM is reserved for DMA and networking.
+    BaseType_t created = xTaskCreateWithCaps(
         processingTaskEntry,
         "xiaozhi_afe",
         PROCESS_TASK_STACK_SIZE,
         this,
         PROCESS_TASK_PRIORITY,
-        &processing_task_
+        &processing_task_,
+        MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT
     );
     if (created != pdPASS) {
         ESP_LOGE(TAG, "Failed to create AFE processing task");
@@ -760,7 +764,7 @@ void XiaozhiAudioProcessor::processingTaskEntry(void *arg)
     if (processor->event_group_) {
         xEventGroupSetBits(processor->event_group_, EVENT_TASK_EXITED);
     }
-    vTaskDelete(nullptr);
+    vTaskDeleteWithCaps(nullptr);
 }
 
 } // namespace esp_brookesia::apps
