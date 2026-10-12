@@ -2,7 +2,7 @@
 
 An extensible watch system for the ESP32-S3 with a 2.06-inch 410 x 502 AMOLED display.
 
-Version 0.1.0 is in development. The integrated firmware has not yet passed hardware acceptance testing.
+Version 0.1.1 is in development. The integrated firmware has not yet passed hardware acceptance testing.
 
 ## Applications
 

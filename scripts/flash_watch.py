@@ -25,6 +25,7 @@ def main():
     parser.add_argument("--port", required=True)
     parser.add_argument("--backup", type=Path, required=True)
     parser.add_argument("--migrate-original-nvs", action="store_true")
+    parser.add_argument("--app-only", action="store_true", help="Update the app after verifying the installed partition table")
     parser.add_argument("--write", action="store_true", help="Perform writes; otherwise validate only")
     args = parser.parse_args()
     status = subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True)
@@ -38,6 +39,11 @@ def main():
     if config["extra_esptool_args"]["chip"] != "esp32s3" or config["flash_settings"]["flash_size"] != "32MB":
         raise SystemExit("Build is not configured for this 32 MB ESP32-S3.")
     files = {int(offset, 0): BUILD / name for offset, name in config["flash_files"].items()}
+    if args.app_only and args.migrate_original_nvs:
+        raise SystemExit("App-only updates cannot migrate NVS.")
+    if args.app_only:
+        app = config["app"]
+        files = {int(app["offset"], 0): BUILD / app["file"]}
     if args.migrate_original_nvs:
         original = partitions(snapshot[0x8000:0x9000])["nvs"]
         target = partitions((BUILD / "partition_table/partition-table.bin").read_bytes())["nvs"]
@@ -59,6 +65,8 @@ def main():
     python = Path(os.environ.get("IDF_PYTHON_ENV_PATH", str(Path.home()/".espressif/python_env/idf5.5_py3.10_env"))) / "Scripts/python.exe"
     command = [str(python), "-m", "esptool", "--chip", "esp32s3", "--port", args.port, "--baud", "460800"]
     subprocess.run(command + ["flash_id"], check=True)
+    if args.app_only:
+        subprocess.run(command + ["--after", "no_reset", "verify_flash", "0x8000", str(BUILD / "partition_table/partition-table.bin")], check=True)
     addresses = [item for offset,file in sorted(files.items()) for item in (hex(offset),str(file))]
     subprocess.run(command + ["--after", "no_reset", "write_flash"] + config["write_flash_args"] + addresses, check=True)
     subprocess.run(command + ["--after", "hard_reset", "verify_flash"] + addresses, check=True)

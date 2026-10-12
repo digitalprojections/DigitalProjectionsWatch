@@ -71,6 +71,22 @@ int main() {
     assert(corrupt.state() == CalibrationState::Unavailable);
     finish(corrupt, 0xFFFFFF00u);
     assert(corrupt.state() == CalibrationState::Ready);
+    // The physical QMI8658 shows roughly 1 dps peak-to-peak noise while stationary.
+    Store noisyStore;
+    CalibrationService noisy(noisyStore);
+    noisy.start(0);
+    for (unsigned t=0;t<=1200;t+=20) {
+        const float noise = (t/20)%2 ? 0.65f : -0.65f;
+        noisy.sample({0.058f,0.026f,-1.01f,-1.3f+noise,4.7f-noise,-0.8f+noise},t);
+    }
+    assert(noisy.state()==CalibrationState::Ready);
+    // Actual changing angular velocity must still prevent calibration.
+    noisy.start(2000);
+    for (unsigned t=2000;t<=10200;t+=20) {
+        const float movement = (t/20)%2 ? 4.0f : -4.0f;
+        noisy.sample({0,0,-1,movement,0,0},t);
+    }
+    assert(noisy.state()==CalibrationState::Error);
     std::puts("Shared calibration: bias correction, reload, generation, corrupt data, failed save, "
               "timeout, invalid input, missing sensor and timer wrap passed.");
 }

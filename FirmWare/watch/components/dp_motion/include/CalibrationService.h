@@ -111,7 +111,7 @@ class CalibrationService {
         for (unsigned i = 0; i < 6; ++i) {
             lo[i] = std::fmin(lo[i], v[i]);
             hi[i] = std::fmax(hi[i], v[i]);
-            if (hi[i] - lo[i] > (i < 3 ? .025f : .5f))
+            if (hi[i] - lo[i] > (i < 3 ? .025f : 2.0f))
                 stable = false;
         }
         if (!stable) {

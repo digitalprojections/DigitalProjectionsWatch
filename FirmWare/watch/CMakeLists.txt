@@ -19,7 +19,7 @@ add_compile_options(
 )
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-set(PROJECT_VER "0.1.0")
+set(PROJECT_VER "0.1.1")
 project(dp-watch)
 
 # mcp-c-sdk 2.0.1 contains bounded strncpy calls that GCC 14 cannot prove are

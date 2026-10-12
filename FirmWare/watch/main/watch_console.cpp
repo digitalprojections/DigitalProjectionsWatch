@@ -56,8 +56,10 @@ int apps(int argc, char **argv) {
             result=systemPhone->sendAppEvent(&event);
         }
     } else result = false;
+    const auto *active = systemPhone->getManager().getActiveApp();
+    const int activeId = active ? active->getId() : 0;
     esp_lv_adapter_unlock();
-    std::printf("WATCH %s free_internal=%u\n", result?"ok":"error", static_cast<unsigned>(heap_caps_get_free_size(MALLOC_CAP_INTERNAL)));
+    std::printf("WATCH %s active_id=%d free_internal=%u\n", result?"ok":"error", activeId, static_cast<unsigned>(heap_caps_get_free_size(MALLOC_CAP_INTERNAL)));
     return result ? 0 : 1;
 }
 }
