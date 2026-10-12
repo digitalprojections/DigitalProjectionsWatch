@@ -77,6 +77,12 @@
   "app_sha256": "678b667b7380774f9db8644ae20db3315850e6df5c140267544181c641f0068e",
   "flash_digest_verified": true,
   "host_sleep_wake_tests": "passed",
-  "physical_panel_and_wake": "pending user check",
-  "scope": "Driver off/on and Settings callback verified over USB; physical emission and touch/BOOT wake remain distinct checks"
+  "physical_panel_and_wake": "User confirmed screen completely dark, touch wake works, and BOOT wake works",
+  "scope": "Host state tests, actual Settings callback, rounded-screen button bounds, driver off/on and retained brightness verified; user confirmed physical darkness and both wake methods",
+  "off_button_bounds": [
+    32,
+    326,
+    377,
+    409
+  ]
 }
