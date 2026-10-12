@@ -33,30 +33,4 @@ public:
  }
  void reset(){held=longPress=false;}
 };
-class Flight {
- Packet sample{};bool seen=false,started=false;uint32_t receivedAt=0,tickAt=0;
- float fusedRoll=0,fusedPitch=0,zeroRoll=0,zeroPitch=0;
-public:
- float roll=0,pitch=0,yaw=0,x=0,y=0,distance=0;uint32_t packets=0;unsigned gates=0;
- bool connected(uint32_t now)const{return seen&&uint32_t(now-receivedAt)<400;}
- bool running(uint32_t now)const{return connected(now)&&(sample.flags&Valid)&&!(sample.flags&Paused);}
- const Packet& packet()const{return sample;}
- bool receive(const Packet&p,uint32_t now){
-  if(!valid(p)||p.type!=1)return false;
-  if(seen){if(p.session!=sample.session&&uint32_t(now-receivedAt)<2000)return false;
-   if(p.session==sample.session&&int32_t(p.sequence-sample.sequence)<=0)return false;}
-  bool center=!seen||p.session!=sample.session||p.center!=sample.center;
-  sample=p;receivedAt=now;seen=true;++packets;
-  if(center){fusedRoll=std::atan2(float(p.ay),float(p.az))*Deg;fusedPitch=std::atan2(-float(p.ax),std::hypot(float(p.ay),float(p.az)))*Deg;zeroRoll=fusedRoll;zeroPitch=fusedPitch;roll=pitch=yaw=x=y=0;}
-  return true;
- }
- void tick(uint32_t now){float dt=started?std::min(.1f,float(uint32_t(now-tickAt))*.001f):.02f;tickAt=now;started=true;if(!running(now))return;
-  float ar=std::atan2(float(sample.ay),float(sample.az))*Deg;
-  float ap=std::atan2(-float(sample.ax),std::hypot(float(sample.ay),float(sample.az)))*Deg;
-  float alpha=std::exp(-dt*4);fusedRoll=alpha*(fusedRoll+sample.gx*.01f*dt)+(1-alpha)*ar;fusedPitch=alpha*(fusedPitch+sample.gy*.01f*dt)+(1-alpha)*ap;
-  roll=std::max(-50.f,std::min(50.f,fusedRoll-zeroRoll));pitch=std::max(-40.f,std::min(40.f,fusedPitch-zeroPitch));
-  yaw=std::remainder(yaw+sample.gz*.01f*dt,360.f);x=std::max(-20.f,std::min(20.f,x+roll*.12f*dt));y=std::max(-15.f,std::min(15.f,y-pitch*.12f*dt));
-  auto old=int(distance/40);distance+=sample.throttle*.025f*dt;if(int(distance/40)>old&&std::hypot(x,y)<6)++gates;
- }
-};
 }

@@ -2,7 +2,7 @@
 
 An extensible watch system for the ESP32-S3 with a 2.06-inch 410 x 502 AMOLED display.
 
-Version 0.1.13 adds the WristLink six-axis controller for Digital Projections console games, preserving shared calibration and providing BOOT centering/pause and a throttle slider. Hardware validation is pending.
+Version 0.1.14 adds the WristLink six-axis controller for Digital Projections console games, preserving shared calibration and providing BOOT centering/pause and a throttle slider. Hardware validation is pending.
 
 Version 0.1.11 fixes the clipped timezone menu with a bounded scrollable panel and moves AI Chat audio worker stacks into PSRAM. AI Chat reached Ready over USB on 0.1.10; 0.1.11 also disables the legacy AI server clock override. Version 0.1.11 is installed with a matching digest; clock checks passed after AI connected. Japan selection is confirmed by touch. AI voice interaction remains unresolved (Ready without response). See [validation](docs/watch-validation-0.1.11.json).
 
