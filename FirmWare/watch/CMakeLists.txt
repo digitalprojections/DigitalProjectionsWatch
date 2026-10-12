@@ -18,6 +18,9 @@ add_compile_options(
     "-fmacro-prefix-map=${REPOSITORY_ROOT}=."
 )
 
+# Keep the combined Wi-Fi/BLE dependency includes below Windows process limits.
+set(CMAKE_NINJA_FORCE_RESPONSE_FILE ON CACHE BOOL "Use compiler response files" FORCE)
+
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 set(PROJECT_VER "0.1.3")
 project(dp-watch)

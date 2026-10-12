@@ -327,6 +327,7 @@ namespace esp_brookesia::apps
     bool Settings::pause()
     {
         ESP_UTILS_LOGD("Pause");
+        if (active_page == ActivePage::Bluetooth) dpwatch::stopPhoneSetup();
         return true;
     }
 
