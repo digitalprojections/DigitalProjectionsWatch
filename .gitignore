@@ -8,3 +8,16 @@ releases/downloads/
 *.tar.gz
 __pycache__/
 *.py[cod]
+
+**/.build/
+**/sdkconfig
+**/sdkconfig.old
+**/backups/
+**/.local/
+.env*
+*.elf
+*.map
+
+*.log
+
+FirmWare/watch/dependencies.lock

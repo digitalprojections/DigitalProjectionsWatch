@@ -1,16 +1,5 @@
-# Security Policy
+# Digital Projections Watch security
 
-[简体中文](SECURITY_ZH.md)
+Keep Wi-Fi credentials, service tokens, full-flash snapshots and private configuration out of public issues and commits. Use GitHub private vulnerability reporting from this repository's Security tab when available. Public reports should omit exploit details and sensitive data.
 
-## Reporting A Vulnerability
-
-Please do not disclose security vulnerabilities in public issues.
-
-Report vulnerabilities through the private [Waveshare service ticket channel](https://service.waveshare.com/) with:
-
-- Affected repository and example path.
-- A clear description of the issue.
-- Reproduction steps or proof of concept.
-- Impact and any known mitigations.
-
-The maintainers will review the report and coordinate a fix or advisory when appropriate.
+This project is under development. Build and hardware test results are documented separately; they do not establish a security certification.

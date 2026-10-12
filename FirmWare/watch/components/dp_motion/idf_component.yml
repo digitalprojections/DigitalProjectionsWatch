@@ -1,0 +1,2 @@
+dependencies:
+  waveshare/qmi8658: "2.0.0"

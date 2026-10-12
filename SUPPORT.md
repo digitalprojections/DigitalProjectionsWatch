@@ -1,15 +1,5 @@
-# Support
+# Digital Projections Watch support
 
-[简体中文](SUPPORT_ZH.md)
+Report software issues in [this repository](https://github.com/digitalprojections/DigitalProjectionsWatch/issues). Include the firmware version, board revision, reproduction steps, and relevant logs or screenshots. Remove credentials and personal information before sharing logs.
 
-For product usage questions, first check the [official product wiki](https://www.waveshare.com/wiki/ESP32-S3-Touch-AMOLED-2.06) and repository issues.
-
-When opening an issue, include:
-
-- Board name and revision.
-- Example path.
-- Framework and version.
-- Steps to reproduce.
-- Relevant serial logs, build logs, or screenshots.
-
-For order-specific, hardware replacement, or private support questions, use the [Waveshare service ticket channel](https://service.waveshare.com/). The [official support documentation](https://docs.waveshare.com/support) lists additional support options.
+For hardware pinouts, schematics and original board documentation, use the [Waveshare 2.06 wiki](https://www.waveshare.com/wiki/ESP32-S3-Touch-AMOLED-2.06). Contact the seller for order or hardware warranty matters.
