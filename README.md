@@ -2,9 +2,9 @@
 
 An extensible watch system for the ESP32-S3 with a 2.06-inch 410 x 502 AMOLED display.
 
-Version 0.1.6 adds a recordings library and on-watch WAV playback. Open **Recorder > Recordings**, tap a recording to play it, and use **Stop** to end playback. **Older** browses additional files; the back arrow returns to recording. Recordings are streamed from SD without loading the whole file into memory.
+Version 0.1.6 adds a recordings library and on-watch WAV playback. Open **Recorder > Recordings**, tap a recording to play it, and use **Stop** to end playback. **Older** browses additional files; the back arrow returns to recording. Recordings are streamed from SD without loading the whole file into memory. Version 0.1.6 is installed with a matching flash digest. Full playback, repeated stop/replay, and exit/reopen passed over USB; audible quality and physical touch confirmation are pending. See [validation evidence](docs/watch-validation-0.1.6.json).
 
-Version 0.1.4 added phone-based Wi-Fi setup over Bluetooth Low Energy. Enter the network password on Android instead of the watch keyboard. See [phone setup instructions](docs/phone-wifi-setup.md). Host state and UI tests passed. Version 0.1.4 is installed with a matching flash digest; Bluetooth startup, cancellation and restart passed on the watch. Android phone provisioning succeeded: the user confirmed Wi-Fi connected, and USB reported Success with provisioning stopped. See [0.1.4 validation evidence](docs/watch-validation-0.1.4.json).
+Version 0.1.4 added phone-based Wi-Fi setup over Bluetooth Low Energy. Enter the network password on Android instead of the watch keyboard. See [phone setup instructions](docs/phone-wifi-setup.md). Host state and UI tests passed. Version 0.1.4 passed flash digest verification; Bluetooth startup, cancellation and restart passed on the watch. Android phone provisioning succeeded: the user confirmed Wi-Fi connected, and USB reported Success with provisioning stopped. See [0.1.4 validation evidence](docs/watch-validation-0.1.4.json).
 
 The installed 0.1.2 swipe-control release passed firmware digest and launch checks. Shared motion calibration, reboot persistence, SD read/write, and physical BOOT controls were verified in 0.1.1. See [0.1.2 validation evidence](docs/watch-validation-0.1.2.json) and [0.1.1 hardware evidence](docs/watch-validation-0.1.1.json).
 

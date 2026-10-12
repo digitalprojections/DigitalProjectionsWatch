@@ -1,0 +1,147 @@
+{
+  "version": "0.1.6",
+  "firmware_source_commit": "455290b46864e4efa06f29ae24379304c1c9b26c",
+  "app_size_bytes": 6780880,
+  "app_sha256": "1dbb636cbe0e9cf58b85113c5702ba3a504136faf9aeb06e4ed0a4da009c7c20",
+  "checks": {
+    "host": "9962 game checks plus calibration, swipe, provisioning and recorder suites passed",
+    "recorder_host": "valid mono/stereo PCM, invalid formats, empty/truncated data, bounded library paging and audio ownership gating passed",
+    "lvgl": "production library view rendered at 410x502; five row targets, bounds, events and 30 create/delete cycles passed",
+    "firmware_build": "ESP-IDF 5.5.4 passed; 19 percent app partition free",
+    "flash": "app-only installation; digest matched after original recovery snapshot and live partition table validation",
+    "usb_journey": [
+      {
+        "library": {
+          "state": "7",
+          "stopped": "1",
+          "entries": "1",
+          "bytes": "0",
+          "total": "0",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      },
+      {
+        "play_cycle": 0,
+        "status": {
+          "state": "9",
+          "stopped": "0",
+          "entries": "0",
+          "bytes": "65536",
+          "total": "542720",
+          "error": "ESP_OK",
+          "owner": "Recorder",
+          "applied": "1"
+        }
+      },
+      {
+        "stop_cycle": 0,
+        "status": {
+          "state": "10",
+          "stopped": "1",
+          "entries": "1",
+          "bytes": "125952",
+          "total": "542720",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      },
+      {
+        "play_cycle": 1,
+        "status": {
+          "state": "9",
+          "stopped": "0",
+          "entries": "0",
+          "bytes": "91136",
+          "total": "542720",
+          "error": "ESP_OK",
+          "owner": "Recorder",
+          "applied": "1"
+        }
+      },
+      {
+        "stop_cycle": 1,
+        "status": {
+          "state": "10",
+          "stopped": "1",
+          "entries": "1",
+          "bytes": "152576",
+          "total": "542720",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      },
+      {
+        "play_cycle": 2,
+        "status": {
+          "state": "9",
+          "stopped": "0",
+          "entries": "0",
+          "bytes": "95232",
+          "total": "542720",
+          "error": "ESP_OK",
+          "owner": "Recorder",
+          "applied": "1"
+        }
+      },
+      {
+        "stop_cycle": 2,
+        "status": {
+          "state": "10",
+          "stopped": "1",
+          "entries": "1",
+          "bytes": "155648",
+          "total": "542720",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      },
+      {
+        "natural_end": {
+          "state": "10",
+          "stopped": "1",
+          "entries": "1",
+          "bytes": "542720",
+          "total": "542720",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      },
+      {
+        "exit_during_playback": {
+          "state": "10",
+          "stopped": "1",
+          "entries": "1",
+          "bytes": "92160",
+          "total": "542720",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      },
+      {
+        "reopen": {
+          "state": "10",
+          "stopped": "1",
+          "entries": "1",
+          "bytes": "92160",
+          "total": "542720",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      }
+    ],
+    "physical_playback": "awaiting user confirmation"
+  },
+  "regression_fixed": "0.1.5 USB home navigation overflowed console_repl stack; 0.1.6 dispatches app transitions on the UI task and the same exit/reopen journey passed",
+  "remaining_checks": [
+    "Audible playback and physical Stop touch confirmation",
+    "SD removal and malformed-file recovery on hardware; malformed headers are host-tested"
+  ]
+}
