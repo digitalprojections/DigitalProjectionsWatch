@@ -1,0 +1,28 @@
+{
+  "version": "0.1.4",
+  "firmware_source_commit": "475512ae3815483e1a03b34a0cb678a0db26a0cb",
+  "app_size_bytes": 6773184,
+  "app_sha256": "cbcf27d86e0e5a9a4244bc846b5a8943bc933cfa368c29ec29965d9acff55a59",
+  "checks": {
+    "host_rules": "9962 checks passed; calibration, swipe and provisioning-state suites passed",
+    "lvgl_setup_view": "state/action gating, 60-pixel controls and 30 open-close cycles passed; 410x502 preview inspected",
+    "build": "ESP-IDF 5.5.4 passed with Windows response files",
+    "flash": "app digest matched; original snapshot and live partition table verified before write",
+    "device_setup": "starts and reaches Waiting state; stop returns Off; restart reaches Waiting again",
+    "internal_ram_bytes": {
+      "before_setup": 52815,
+      "active_setup": 11355,
+      "after_cancel": 52795,
+      "active_after_restart": 11355
+    },
+    "android_provisioning": "Passed: user confirmed Wi-Fi connected on the watch after Android setup; USB reported state=4 (Success), can_start=1, can_stop=0.",
+    "pc_over_air_check": "unavailable: PC has no Bluetooth adapter",
+    "post_success_internal_ram_bytes": 47755
+  },
+  "hardware_issue_resolved": "0.1.3 controller allocation failed; 0.1.4 reduced controller activities and moved optional Wi-Fi IRAM optimizations to cached flash",
+  "remaining_checks": [
+    "invalid-password recovery on the phone",
+    "saved Wi-Fi reconnection after reboot",
+    "Wi-Fi throughput under concurrent application load"
+  ]
+}
