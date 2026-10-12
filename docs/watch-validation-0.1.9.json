@@ -1,0 +1,241 @@
+{
+  "version": "0.1.9",
+  "firmware_source_commit": "5b0925fed173f1d831de63460cfd68c56639c46b",
+  "app_size_bytes": 6790304,
+  "app_sha256": "acc5aa214ad4373c55eac766aa3593427508c46f3c9471ce863d42b6a79aa2df",
+  "checks": {
+    "host": "Game, calibration, swipe, provisioning, recorder and time suites passed",
+    "time_model": "UTC conversion, leap days, invalid BCD/RTC, timeout/retry, offline retention and tick wrap passed",
+    "lvgl": "Time settings action states, saved-zone selection callbacks, closed-page guards, production clock label, safe bounds, recorder reduced-height layout and 30 create/delete cycles passed",
+    "build": "ESP-IDF 5.5.4 build passed",
+    "flash": "App-only flash digest matched; original snapshot and live partition table verified before writes",
+    "clock_usb": [
+      {
+        "internet_time": {
+          "state": "2",
+          "source": "2",
+          "valid": "1",
+          "online": "1",
+          "zone": "0",
+          "epoch": "1791785956",
+          "local": "2026-10-12T15:19:16+0900",
+          "rtc_available": "1",
+          "rtc_saved": "1",
+          "rtc_epoch": "1791785936",
+          "last_sync": "1791785935",
+          "error": "ESP_OK",
+          "rtc_error": "ESP_OK"
+        },
+        "host_utc_delta_seconds": 1
+      },
+      {
+        "utc_zone_ui": {
+          "state": "2",
+          "source": "2",
+          "valid": "1",
+          "online": "1",
+          "zone": "2",
+          "epoch": "1791785961",
+          "local": "2026-10-12T06:19:21+0000",
+          "rtc_available": "1",
+          "rtc_saved": "1",
+          "rtc_epoch": "1791785936",
+          "last_sync": "1791785935",
+          "error": "ESP_OK",
+          "rtc_error": "ESP_OK"
+        }
+      },
+      {
+        "japan_zone_ui": {
+          "state": "2",
+          "source": "2",
+          "valid": "1",
+          "online": "1",
+          "zone": "0",
+          "epoch": "1791785962",
+          "local": "2026-10-12T15:19:22+0900",
+          "rtc_available": "1",
+          "rtc_saved": "1",
+          "rtc_epoch": "1791785936",
+          "last_sync": "1791785935",
+          "error": "ESP_OK",
+          "rtc_error": "ESP_OK"
+        }
+      },
+      {
+        "settings_top_bar": {
+          "visible": "1",
+          "safe": "1",
+          "clock": "184,13,225,35",
+          "battery": "291,12,369,35",
+          "wifi": "40,12,63,35"
+        }
+      },
+      {
+        "app": "2048",
+        "top_bar": {
+          "visible": "1",
+          "safe": "1",
+          "clock": "184,13,225,35",
+          "battery": "291,12,369,35",
+          "wifi": "40,12,63,35"
+        }
+      },
+      {
+        "app": "Recorder",
+        "top_bar": {
+          "visible": "1",
+          "safe": "1",
+          "clock": "184,13,225,35",
+          "battery": "291,12,369,35",
+          "wifi": "40,12,63,35"
+        }
+      },
+      {
+        "app": "GravitySphere",
+        "top_bar": {
+          "visible": "1",
+          "safe": "1",
+          "clock": "184,13,225,35",
+          "battery": "291,12,369,35",
+          "wifi": "40,12,63,35"
+        }
+      }
+    ],
+    "recorder_regression": [
+      {
+        "library": {
+          "state": "7",
+          "stopped": "1",
+          "entries": "2",
+          "bytes": "0",
+          "total": "0",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      },
+      {
+        "play_cycle": 0,
+        "status": {
+          "state": "9",
+          "stopped": "0",
+          "entries": "0",
+          "bytes": "61440",
+          "total": "611328",
+          "error": "ESP_OK",
+          "owner": "Recorder",
+          "applied": "1"
+        }
+      },
+      {
+        "stop_cycle": 0,
+        "status": {
+          "state": "10",
+          "stopped": "1",
+          "entries": "2",
+          "bytes": "122880",
+          "total": "611328",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      },
+      {
+        "play_cycle": 1,
+        "status": {
+          "state": "9",
+          "stopped": "0",
+          "entries": "0",
+          "bytes": "92160",
+          "total": "611328",
+          "error": "ESP_OK",
+          "owner": "Recorder",
+          "applied": "1"
+        }
+      },
+      {
+        "stop_cycle": 1,
+        "status": {
+          "state": "10",
+          "stopped": "1",
+          "entries": "2",
+          "bytes": "152576",
+          "total": "611328",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      },
+      {
+        "play_cycle": 2,
+        "status": {
+          "state": "9",
+          "stopped": "0",
+          "entries": "0",
+          "bytes": "91136",
+          "total": "611328",
+          "error": "ESP_OK",
+          "owner": "Recorder",
+          "applied": "1"
+        }
+      },
+      {
+        "stop_cycle": 2,
+        "status": {
+          "state": "10",
+          "stopped": "1",
+          "entries": "2",
+          "bytes": "151552",
+          "total": "611328",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      },
+      {
+        "natural_end": {
+          "state": "10",
+          "stopped": "1",
+          "entries": "2",
+          "bytes": "611328",
+          "total": "611328",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      },
+      {
+        "exit_during_playback": {
+          "state": "10",
+          "stopped": "1",
+          "entries": "2",
+          "bytes": "93184",
+          "total": "611328",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      },
+      {
+        "reopen": {
+          "state": "10",
+          "stopped": "1",
+          "entries": "2",
+          "bytes": "93184",
+          "total": "611328",
+          "error": "ESP_OK",
+          "owner": "None",
+          "applied": "1"
+        }
+      }
+    ],
+    "reboot": "Native USB ROM entry followed by hard reset; startup reported Restored UTC time from RTC, then internet synchronization; zone=0 and +0900 retained",
+    "physical_screen": "awaiting user confirmation"
+  },
+  "remaining_checks": [
+    "Physical corner visibility and displayed time confirmation",
+    "RTC retention after complete main-power removal with backup battery connected",
+    "NTP fallback during a real server outage; timeout/retry states are host-tested"
+  ]
+}
