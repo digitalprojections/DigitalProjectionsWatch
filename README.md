@@ -2,15 +2,19 @@
 
 An extensible watch system for the ESP32-S3 with a 2.06-inch 410 x 502 AMOLED display.
 
-Version 0.1.1 is in development. The integrated firmware has not yet passed hardware acceptance testing.
+Version 0.1.2 switches 2048 to touchscreen swipes. Host rules and LVGL pointer-input tests passed; installation and physical swipe confirmation are pending. Shared motion calibration, reboot persistence, SD read/write, and physical BOOT controls were verified in 0.1.1. Media/audio and AI account journeys remain unverified. See [prior validation evidence](docs/watch-validation-0.1.1.json).
 
 ## Applications
 
 The system includes 2048, GravitySphere, calculator, drawing, gallery, music, recording, video, settings, and AI chat. Factory applications are adapted from the Waveshare 1.75-inch Brookesia source to the 2.06-inch hardware. Original licensing and attribution are retained.
 
-2048 uses the accelerometer for directional tilt and gyroscope readings to reject abrupt rotation. Return the watch to neutral after each move. BOOT toggles pause, a double press calibrates, and a two-second hold starts a new game. GravitySphere uses the same calibration; holding BOOT centres its ball.
+Swipe across the 2048 board to move tiles in that direction. Short taps and ambiguous diagonal swipes are ignored; each contact makes at most one move. BOOT toggles pause and a two-second hold starts a new game. 2048 works independently of motion calibration. In GravitySphere, double-press BOOT to calibrate and hold BOOT to centre the ball.
 
 Calibration is shared across motion apps and saved to NVS. Keep the watch flat and still during calibration. A successful stationary measurement corrects accelerometer and gyroscope bias; it does not perform six-face scale calibration. Calibration reports loading, success, unavailable, or error and has an eight-second deadline.
+
+![2048 development preview](docs/screenshots/2048-preview.png)
+
+The image above is a host-rendered UI preview.
 
 ## Development
 

@@ -1,0 +1,35 @@
+{
+  "version": "0.1.1",
+  "firmware_source_commit": "718441ef109937b7cd66f855f4ee02099b9e1c34",
+  "app_size_bytes": 6494608,
+  "app_sha256": "451df1e31a8704c973bc85ae100e4375ea3c9dccd71e111c06cad9b5a7fc435d",
+  "hardware": {
+    "chip": "ESP32-S3",
+    "flash_bytes": 33554432,
+    "psram_bytes": 8388608,
+    "display": "CO5300 410x502",
+    "touch": "FT3168",
+    "imu": "QMI8658"
+  },
+  "checks": {
+    "host_game_controls": 9962,
+    "calibration_regressions": "passed, including measured stationary noise and moving-sensor rejection",
+    "lvgl_journey": "passed including 30 open-close cycles",
+    "idf_build": "5.5.4 passed",
+    "flash_verification": "all initial regions matched; 0.1.1 app digest matched",
+    "calibration": "ready, generation 1",
+    "shared_profile": "generation 1 observed in both apps",
+    "reboot_persistence": "generation 1 restored after reboot",
+    "usb_app_cycles": "five cycles per app, stable reported internal free memory, no captured panic/reset",
+    "launcher_visual": "user confirmed normal display and orientation",
+    "physical_game_controls": "user confirmed four tilt directions, BOOT pause/resume and hold for new game",
+    "sd_card_capacity_bytes": 2007498752,
+    "sd_test": "16 KiB write/read with matching CRC; temporary file removed",
+    "physical_calibration": "user confirmed BOOT double-press calibration finishes"
+  },
+  "not_verified": [
+    "all media/audio app journeys",
+    "AI account and network conversation flows",
+    "full original-firmware restore procedure"
+  ]
+}

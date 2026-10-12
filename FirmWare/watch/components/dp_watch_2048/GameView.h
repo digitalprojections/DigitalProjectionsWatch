@@ -1,13 +1,12 @@
 #pragma once
 #include "BootButton.h"
-#include "CalibrationService.h"
 #include "Game2048.h"
-#include "MotionControl.h"
+#include "SwipeControl.h"
 #include <lvgl.h>
 namespace dpwatch {
 class GameView {
     lv_obj_t *root = nullptr, *tiles[16]{}, *scoreLabel = nullptr, *statusLabel = nullptr;
-    CalibrationState sharedState = CalibrationState::Needed;
+    SwipeControl swipe;
     bool paused = false;
     BootButton boot;
     void render() {
@@ -33,28 +32,37 @@ class GameView {
     void status() {
         if (!root)
             return;
-        const char *text = "Double-press BOOT to calibrate";
-        if (sharedState == CalibrationState::Loading)
-            text = "Keep flat and still - calibrating";
-        else if (sharedState == CalibrationState::Unavailable)
-            text = "Motion sensor unavailable";
-        else if (sharedState == CalibrationState::Error)
-            text = "Calibration failed - double-press BOOT";
-        else if (sharedState == CalibrationState::Ready) {
-            if (paused)
-                text = "Paused - press BOOT to resume";
-            else if (!game.canMove())
-                text = "Game over - hold BOOT for a new game";
-            else
-                text =
-                    game.won() ? "2048 reached! Keep playing" : "Tilt to move; return to neutral";
-        }
+        const char *text = "Swipe to move the tiles";
+        if (paused) text = "Paused - press BOOT to resume";
+        else if (!game.canMove()) text = "Game over - hold BOOT for a new game";
+        else if (game.won()) text = "2048 reached! Keep playing";
         lv_label_set_text(statusLabel, text);
     }
 
   public:
     Game2048 game;
-    MotionControl motion;
+    // LVGL routes the entire board contact here, including contacts on tiles.
+    static void touchEvent(lv_event_t *event) {
+        auto *view = static_cast<GameView *>(lv_event_get_user_data(event));
+        auto *input = lv_indev_active();
+        if (!input) return;
+        lv_point_t point;
+        lv_indev_get_point(input, &point);
+        switch (lv_event_get_code(event)) {
+        case LV_EVENT_PRESSED: view->touchDown(point.x, point.y); break;
+        case LV_EVENT_RELEASED: view->touchUp(point.x, point.y); break;
+        case LV_EVENT_PRESS_LOST: view->swipe.cancel(); break;
+        default: break;
+        }
+    }
+    void touchDown(int x, int y) { if (!paused) swipe.press(x, y); }
+    void touchUp(int x, int y) {
+        const auto direction = swipe.release(x, y);
+        if (!paused && direction != Direction::None && game.move(direction)) {
+            render();
+            status();
+        }
+    }
     void open(lv_obj_t *parent, unsigned seed) {
         if (game.cells == std::array<uint32_t, 16>{})
             game.reset(seed);
@@ -82,13 +90,15 @@ class GameView {
         lv_obj_set_style_pad_all(board, 0, 0);
         lv_obj_set_style_border_width(board, 0, 0);
         lv_obj_set_style_bg_color(board, lv_color_hex(0x101827), 0);
-        lv_obj_remove_flag(board, LV_OBJ_FLAG_SCROLLABLE);
+        lv_obj_remove_flag(board, static_cast<lv_obj_flag_t>(LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_GESTURE_BUBBLE));
+        lv_obj_add_flag(board, LV_OBJ_FLAG_PRESS_LOCK);
+        lv_obj_add_event_cb(board, touchEvent, LV_EVENT_ALL, this);
         for (int i = 0; i < 16; ++i) {
             auto *tile = lv_obj_create(board);
             lv_obj_set_size(tile, cell, cell);
             lv_obj_set_pos(tile, (i % 4) * (cell + 6), (i / 4) * (cell + 6));
             lv_obj_set_style_border_width(tile, 0, 0);
-            lv_obj_remove_flag(tile, LV_OBJ_FLAG_SCROLLABLE);
+            lv_obj_remove_flag(tile, static_cast<lv_obj_flag_t>(LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE));
             tiles[i] = lv_label_create(tile);
             lv_obj_set_style_text_font(tiles[i], &lv_font_montserrat_24, 0);
             lv_obj_center(tiles[i]);
@@ -97,59 +107,37 @@ class GameView {
         lv_obj_set_width(guide, lv_pct(100));
         lv_obj_set_style_text_align(guide, LV_TEXT_ALIGN_CENTER, 0);
         lv_obj_set_style_text_color(guide, lv_color_hex(0xA9BBCF), 0);
-        lv_label_set_text(guide, "BOOT: pause / resume\nTwo presses: calibrate  |  Hold: new game");
+        lv_label_set_text(guide, "BOOT: pause / resume\nHold 2 seconds: new game");
         lv_obj_align(guide, LV_ALIGN_BOTTOM_MID, 0, 0);
         paused = false;
         boot = BootButton{};
-        if (sharedState == CalibrationState::Ready)
-            motion.useNeutral(0, 0, lv_tick_get());
+        swipe.cancel();
         render();
         status();
     }
-    void resumeInput(unsigned now) {
+    void resumeInput(unsigned) {
         boot = BootButton{};
-        if (sharedState == CalibrationState::Ready) motion.useNeutral(0, 0, now);
-    }
-    void calibrationState(CalibrationState state, unsigned now) {
-        if (state == sharedState)
-            return;
-        sharedState = state;
-        if (state == CalibrationState::Ready)
-            motion.useNeutral(0, 0, now);
-        else
-            motion.unavailable();
-        status();
-    }
-    void feed(const MotionSample &sample, unsigned now) {
-        if (paused || sharedState != CalibrationState::Ready)
-            return;
-        const auto direction = motion.update(sample, now);
-        if (direction != Direction::None && game.move(direction)) {
-            render();
-            status();
-        }
+        swipe.cancel();
     }
     bool button(bool pressed, unsigned now) {
         auto action = boot.update(pressed, now);
-        if (action == ButtonAction::Calibrate)
-            return sharedState != CalibrationState::Loading;
+
         if (action == ButtonAction::TogglePause) {
             paused = !paused;
-            if (!paused && sharedState == CalibrationState::Ready)
-                motion.useNeutral(0, 0, now);
+            swipe.cancel();
             status();
         }
         if (action == ButtonAction::NewGame) {
             game.reset(now);
             paused = false;
-            if (sharedState == CalibrationState::Ready)
-                motion.useNeutral(0, 0, now);
+            swipe.cancel();
             render();
             status();
         }
         return false;
     }
     void close() {
+        swipe.cancel();
         if (root)
             lv_obj_delete(root);
         root = nullptr;
