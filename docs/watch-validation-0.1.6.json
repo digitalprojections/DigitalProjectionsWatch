@@ -137,11 +137,10 @@
         }
       }
     ],
-    "physical_playback": "awaiting user confirmation"
+    "physical_playback": "User confirmed playback sounds correct through the speaker and the physical Stop control works."
   },
   "regression_fixed": "0.1.5 USB home navigation overflowed console_repl stack; 0.1.6 dispatches app transitions on the UI task and the same exit/reopen journey passed",
   "remaining_checks": [
-    "Audible playback and physical Stop touch confirmation",
     "SD removal and malformed-file recovery on hardware; malformed headers are host-tested"
   ]
 }
