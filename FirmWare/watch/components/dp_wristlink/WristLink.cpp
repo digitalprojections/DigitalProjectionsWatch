@@ -27,6 +27,7 @@ bool WristLink::startRadio() {
   error = esp_wifi_start();
   if (error != ESP_OK && error != ESP_ERR_WIFI_CONN)
     return false;
+  if(esp_wifi_get_ps(&savedPowerMode)==ESP_OK && esp_wifi_set_ps(WIFI_PS_NONE)==ESP_OK)powerManaged=true;
   error = esp_now_init();
   if (error != ESP_OK)
     return false;
@@ -53,6 +54,7 @@ void WristLink::stopRadio() {
     esp_now_deinit();
   }
   radio = false;
+  if(powerManaged){esp_wifi_set_ps(savedPowerMode);powerManaged=false;}
   ackAt = 0;
 }
 void WristLink::receive(const esp_now_recv_info_t *, const uint8_t *b,

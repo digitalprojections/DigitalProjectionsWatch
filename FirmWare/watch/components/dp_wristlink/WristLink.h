@@ -3,6 +3,7 @@
 #include "WristLinkView.h"
 #include "esp_brookesia.hpp"
 #include "esp_now.h"
+#include "esp_wifi.h"
 #include <atomic>
 namespace esp_brookesia::apps {
 class WristLink final : public systems::phone::App {
@@ -14,6 +15,8 @@ class WristLink final : public systems::phone::App {
   std::atomic<unsigned> acknowledgements{0};
   wristlink::Buttons buttons;
   bool radio = false, paused = false;
+  wifi_ps_type_t savedPowerMode=WIFI_PS_NONE;
+  bool powerManaged=false;
   uint32_t uiAt = 0;
   unsigned sent = 0;
   esp_err_t error = ESP_OK;
