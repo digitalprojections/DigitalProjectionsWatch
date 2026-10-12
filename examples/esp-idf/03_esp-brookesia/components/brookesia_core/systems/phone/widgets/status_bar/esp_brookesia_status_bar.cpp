@@ -13,6 +13,7 @@
 #include "systems/base/esp_brookesia_base_context.hpp"
 #include "lvgl/esp_brookesia_lv_helper.hpp"
 #include "esp_brookesia_status_bar.hpp"
+#include "StatusClockLabel.h"
 
 using namespace std;
 using namespace esp_brookesia::gui;
@@ -542,168 +543,48 @@ bool StatusBar::setWifiIconState(WifiState state) const
 
 bool StatusBar::beginClock(void)
 {
-    ESP_Brookesia_LvObj_t clock_obj = nullptr;
-    ESP_Brookesia_LvObj_t clock_hour_label = nullptr;
-    ESP_Brookesia_LvObj_t clock_dot_label = nullptr;
-    ESP_Brookesia_LvObj_t clock_min_label = nullptr;
-    ESP_Brookesia_LvObj_t clock_period_label = nullptr;
-
-    ESP_UTILS_LOGD("Begin clock(0x%p)", this);
-    ESP_UTILS_CHECK_FALSE_RETURN(!checkClockInitialized(), false, "Already initialized");
-
-    /* Create objects */
-    clock_obj = ESP_BROOKESIA_LV_OBJ(obj, _area_objs[_data.clock.area_index].get());
-    ESP_UTILS_CHECK_NULL_RETURN(clock_obj, false, "Alloc clock object failed");
-
-    clock_hour_label = ESP_BROOKESIA_LV_OBJ(label, clock_obj.get());
-    ESP_UTILS_CHECK_NULL_RETURN(clock_hour_label, false, "Alloc clock hour label failed");
-    lv_obj_add_style(clock_hour_label.get(), _system_context.getDisplay().getCoreContainerStyle(), 0);
-
-    clock_dot_label = ESP_BROOKESIA_LV_OBJ(label, clock_obj.get());
-    ESP_UTILS_CHECK_NULL_RETURN(clock_dot_label, false, "Alloc clock dot label failed");
-    lv_obj_add_style(clock_dot_label.get(), _system_context.getDisplay().getCoreContainerStyle(), 0);
-    lv_label_set_text(clock_dot_label.get(), ":");
-
-    clock_min_label = ESP_BROOKESIA_LV_OBJ(label, clock_obj.get());
-    ESP_UTILS_CHECK_NULL_RETURN(clock_min_label, false, "Alloc clock min label failed");
-    lv_obj_add_style(clock_min_label.get(), _system_context.getDisplay().getCoreContainerStyle(), 0);
-
-    clock_period_label = ESP_BROOKESIA_LV_OBJ(label, clock_obj.get());
-    ESP_UTILS_CHECK_NULL_RETURN(clock_period_label, false, "Alloc clock period label failed");
-    lv_obj_add_style(clock_period_label.get(), _system_context.getDisplay().getCoreContainerStyle(), 0);
-
-    // Setup objects style
-    lv_obj_add_style(clock_obj.get(), _system_context.getDisplay().getCoreContainerStyle(), 0);
-    lv_obj_set_size(clock_obj.get(), LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-    lv_obj_set_flex_flow(clock_obj.get(), LV_FLEX_FLOW_ROW);
-    lv_obj_set_flex_align(clock_obj.get(), LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_set_style_pad_column(clock_obj.get(), 0, 0);
-    lv_obj_clear_flag(clock_obj.get(), LV_OBJ_FLAG_SCROLLABLE);
-
-    _clock_obj = clock_obj;
-    _clock_hour_label = clock_hour_label;
-    _clock_dot_label = clock_dot_label;
-    _clock_min_label = clock_min_label;
-    _clock_period_label = clock_period_label;
-
-    ESP_UTILS_CHECK_FALSE_GOTO(updateClockByNewData(), err, "Update clock style failed");
-    ESP_UTILS_CHECK_FALSE_GOTO(setClockFormat(_clock_format), err, "Set clock format failed");
-    ESP_UTILS_CHECK_FALSE_GOTO(setClock(_clock_hour, _clock_min, false), err, "Set clock failed");
-
-    return true;
-
-err:
-    ESP_UTILS_CHECK_FALSE_RETURN(delClock(), false, "Delete clock failed");
-
-    return false;
+    if (checkClockInitialized()) return false;
+    _clock_obj=ESP_Brookesia_LvObj_t(createStatusClockLabel(
+        _area_objs[_data.clock.area_index].get(),(lv_font_t*)_data.main.text_font.font_resource),gui::LvObjDeleter());
+    if(!_clock_obj)return false;
+    return updateClockByNewData();
 }
-
 bool StatusBar::updateClockByNewData(void)
 {
-    ESP_UTILS_LOGD("Update clock(0x%p)", this);
-    ESP_UTILS_CHECK_FALSE_RETURN(checkClockInitialized(), false, "Not initialized");
-
-    // The first bounds check can run before the parent's flex layout settles.
-    // Hidden children are excluded from flex layout, so reveal and lay out first.
-    _is_clock_out_of_area = false;
-    lv_obj_clear_flag(_clock_obj.get(), LV_OBJ_FLAG_HIDDEN);
-    for (auto *label : {_clock_hour_label.get(), _clock_dot_label.get(),
-                       _clock_min_label.get(), _clock_period_label.get()}) {
-        lv_obj_set_style_text_font(label, (lv_font_t *)_data.main.text_font.font_resource, 0);
-    }
-    lv_obj_update_layout(_main_obj.get());
-    if (esp_brookesia_core_utils_check_obj_out_of_parent(_clock_obj.get())) {
-        _is_clock_out_of_area = true;
-        lv_obj_add_flag(_clock_obj.get(), LV_OBJ_FLAG_HIDDEN);
-        ESP_UTILS_LOGE("Clock out of area, hide it");
-    } else {
-        lv_obj_set_style_text_color(_clock_hour_label.get(), lv_color_hex(_data.main.text_color.color), 0);
-        lv_obj_set_style_text_opa(_clock_hour_label.get(), _data.main.text_color.opacity, 0);
-        lv_obj_set_style_text_color(_clock_min_label.get(), lv_color_hex(_data.main.text_color.color), 0);
-        lv_obj_set_style_text_opa(_clock_min_label.get(), _data.main.text_color.opacity, 0);
-        lv_obj_set_style_text_color(_clock_dot_label.get(), lv_color_hex(_data.main.text_color.color), 0);
-        lv_obj_set_style_text_opa(_clock_dot_label.get(), _data.main.text_color.opacity, 0);
-        lv_obj_set_style_text_color(_clock_period_label.get(), lv_color_hex(_data.main.text_color.color), 0);
-        lv_obj_set_style_text_opa(_clock_period_label.get(), _data.main.text_color.opacity, 0);
-    }
-
-    return true;
-}
-
-bool StatusBar::delClock(void)
-{
-    ESP_UTILS_LOGD("Delete clock(0x%p)", this);
-
-    if (!checkClockInitialized()) {
-        return true;
-    }
-
-    _clock_obj.reset();
-    _clock_hour_label.reset();
-    _clock_dot_label.reset();
-    _clock_min_label.reset();
-    _clock_period_label.reset();
-
-    return true;
-}
-
-bool StatusBar::setClockFormat(ClockFormat format) const
-{
-    ESP_UTILS_LOGD("Set clock format(%d)", static_cast<int>(format));
-    ESP_UTILS_CHECK_NULL_RETURN(_clock_period_label, false, "Invalid clock period label");
-
-    switch (format) {
-    case ClockFormat::FORMAT_12H:
-        lv_obj_clear_flag(_clock_period_label.get(), LV_OBJ_FLAG_HIDDEN);
-        break;
-    case ClockFormat::FORMAT_24H:
-        lv_obj_add_flag(_clock_period_label.get(), LV_OBJ_FLAG_HIDDEN);
-        break;
-    default:
-        ESP_UTILS_CHECK_FALSE_RETURN(false, false, "Invalid clock format");
-        break;
-    }
-
-    _clock_format = format;
-
-    return true;
-}
-
-bool StatusBar::setClock(int hour, int minute, bool is_pm) const
-{
-    ESP_UTILS_LOGD("Set clock(%02d:%02d %s)", hour, minute, is_pm ? "PM" : "AM");
-    ESP_UTILS_CHECK_NULL_RETURN(_clock_obj, false, "Invalid clock");
-
-    hour = max(min(hour, 23), 0);
-    minute = max(min(minute, 59), 0);
-
-    if (_clock_hour != hour) {
-        _clock_hour = hour;
-        if (_clock_format == ClockFormat::FORMAT_12H) {
-            hour = hour % 12;
-            if (hour == 0) {
-                hour = 12;
-            }
-        }
-        lv_label_set_text_fmt(_clock_hour_label.get(), "%02d", hour);
-    }
-    if (_clock_min != minute) {
-        _clock_min = minute;
-        lv_label_set_text_fmt(_clock_min_label.get(), "%02d", minute);
-    }
-    if (_clock_format == ClockFormat::FORMAT_12H) {
-        lv_label_set_text(_clock_period_label.get(), is_pm ? " PM " : " AM ");
-    }
-
-    return true;
-}
-
-bool StatusBar::setClockPending() const {
     if (!checkClockInitialized()) return false;
-    _clock_hour=-1; _clock_min=-1;
-    lv_label_set_text(_clock_hour_label.get(), "--");
-    lv_label_set_text(_clock_min_label.get(), "--");
+    auto*label=_clock_obj.get();
+    lv_obj_set_style_text_font(label,(lv_font_t*)_data.main.text_font.font_resource,0);
+    lv_obj_set_style_text_color(label,lv_color_hex(_data.main.text_color.color),0);
+    lv_obj_set_style_text_opa(label,_data.main.text_color.opacity,0);
+    const auto&area=_data.area.data[_data.clock.area_index];
+    if(area.layout_column_align==AreaAlign::START)lv_obj_align(label,LV_ALIGN_LEFT_MID,area.layout_column_start_offset,0);
+    else if(area.layout_column_align==AreaAlign::END)lv_obj_align(label,LV_ALIGN_RIGHT_MID,-area.layout_column_start_offset,0);
+    else lv_obj_align(label,LV_ALIGN_CENTER,0,0);
+    lv_obj_remove_flag(label,LV_OBJ_FLAG_HIDDEN);
     return true;
+}
+bool StatusBar::delClock(void){_clock_obj.reset();return true;}
+bool StatusBar::setClockFormat(ClockFormat format) const {
+    if(!checkClockInitialized())return false;
+    const int hour=_clock_hour,minute=_clock_min;
+    _clock_format=format;_clock_hour=-1;_clock_min=-1;
+    return hour>=0&&minute>=0?setClock(hour,minute):setClockPending();
+}
+bool StatusBar::setClock(int hour,int minute,bool is_pm) const {
+    if(!checkClockInitialized())return false;
+    hour=max(min(hour,23),0);minute=max(min(minute,59),0);
+    if(hour==_clock_hour&&minute==_clock_min)return true;
+    _clock_hour=hour;_clock_min=minute;
+    if(_clock_format==ClockFormat::FORMAT_12H) {
+        const int h=hour%12;
+        lv_label_set_text_fmt(_clock_obj.get(),"%02d:%02d %s",h?h:12,minute,is_pm?"PM":"AM");
+    }else lv_label_set_text_fmt(_clock_obj.get(),"%02d:%02d",hour,minute);
+    return true;
+}
+bool StatusBar::setClockPending() const {
+    if(!checkClockInitialized())return false;
+    if(_clock_hour!=-1||_clock_min!=-1)lv_label_set_text(_clock_obj.get(),"--:--");
+    _clock_hour=-1;_clock_min=-1;return true;
 }
 bool StatusBar::getWidgetBounds(lv_area_t &clock, lv_area_t &battery, lv_area_t &wifi) const {
     if (!_main_obj || !_clock_obj) return false;

@@ -25,5 +25,6 @@ target_compile_options(recorder_preview PRIVATE /UNDEBUG)
 
 add_executable(time_preview time_preview.cpp)
 target_include_directories(time_preview PRIVATE ../../../FirmWare/watch/components/dp_time ../../../FirmWare/watch/components/Settings/ui)
+target_include_directories(time_preview PRIVATE ../../../examples/esp-idf/03_esp-brookesia/components/brookesia_core/systems/phone/widgets/status_bar)
 target_link_libraries(time_preview PRIVATE lvgl)
 target_compile_options(time_preview PRIVATE /UNDEBUG)

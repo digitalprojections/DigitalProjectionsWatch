@@ -1,4 +1,5 @@
 #include "TimeView.h"
+#include "StatusClockLabel.h"
 #include "SettingsUI.hpp"
 #include "WatchStatusGeometry.h"
 #include <array>
@@ -22,7 +23,7 @@ int main(int argc, char **argv) {
   lv_display_set_buffers(d, buffer.data(), nullptr, buffer.size() * 2,
                          LV_DISPLAY_RENDER_MODE_PARTIAL);
   auto*bar=lv_obj_create(lv_screen_active());lv_obj_remove_style_all(bar);lv_obj_set_size(bar,410,dpwatch::statusBarHeight);lv_obj_set_style_bg_color(bar,lv_color_hex(0x1a1a1a),0);lv_obj_set_style_bg_opa(bar,LV_OPA_COVER,0);lv_obj_set_style_text_color(bar,lv_color_white(),0);
-  auto*c=lv_label_create(bar);lv_label_set_text(c,"10:42");lv_obj_set_style_text_font(c,&lv_font_montserrat_20,0);lv_obj_align(c,LV_ALIGN_CENTER,0,0);
+  auto*c=esp_brookesia::systems::phone::createStatusClockLabel(bar,&lv_font_montserrat_20);lv_label_set_text(c,"10:42");
   auto*w=lv_label_create(bar);lv_label_set_text(w,LV_SYMBOL_WIFI);lv_obj_align(w,LV_ALIGN_LEFT_MID,40,0);
   auto*b=lv_label_create(bar);lv_label_set_text(b,"85% " LV_SYMBOL_BATTERY_FULL);lv_obj_align(b,LV_ALIGN_RIGHT_MID,-40,0);
   auto*app=lv_obj_create(lv_screen_active());lv_obj_remove_style_all(app);lv_obj_set_size(app,410,454);lv_obj_set_pos(app,0,48);

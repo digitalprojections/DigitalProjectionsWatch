@@ -171,12 +171,7 @@ private:
     mutable int _clock_hour = -1;
     mutable int _clock_min = -1;
     mutable ClockFormat _clock_format = ClockFormat::FORMAT_24H;
-    bool _is_clock_out_of_area = false;
     ESP_Brookesia_LvObj_t _clock_obj;
-    ESP_Brookesia_LvObj_t _clock_hour_label;
-    ESP_Brookesia_LvObj_t _clock_dot_label;
-    ESP_Brookesia_LvObj_t _clock_min_label;
-    ESP_Brookesia_LvObj_t _clock_period_label;
 };
 
 } // namespace esp_brookesia::systems::phone

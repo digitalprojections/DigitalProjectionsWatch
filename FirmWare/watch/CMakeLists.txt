@@ -22,7 +22,7 @@ add_compile_options(
 set(CMAKE_NINJA_FORCE_RESPONSE_FILE ON CACHE BOOL "Use compiler response files" FORCE)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-set(PROJECT_VER "0.1.8")
+set(PROJECT_VER "0.1.9")
 project(dp-watch)
 
 # mcp-c-sdk 2.0.1 contains bounded strncpy calls that GCC 14 cannot prove are
