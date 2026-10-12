@@ -5,6 +5,7 @@
  */
 #pragma once
 
+#include "RecordingPlayback.h"
 #include <atomic>
 #include <stdint.h>
 
@@ -18,61 +19,92 @@ namespace esp_brookesia::apps {
 
 class Recorder : public systems::phone::App {
 public:
-    static Recorder *requestInstance(bool use_status_bar = false, bool use_navigation_bar = false);
-    ~Recorder();
+  static Recorder *requestInstance(bool use_status_bar = false,
+                                   bool use_navigation_bar = false);
+  ~Recorder();
+  bool diagnostic(const char *action);
 
 protected:
-    Recorder(bool use_status_bar, bool use_navigation_bar);
+  Recorder(bool use_status_bar, bool use_navigation_bar);
 
-    bool run() override;
-    bool back() override;
-    bool close() override;
-    bool init() override;
-    bool deinit() override;
-    bool pause() override;
-    bool resume() override;
+  bool run() override;
+  bool back() override;
+  bool close() override;
+  bool init() override;
+  bool deinit() override;
+  bool pause() override;
+  bool resume() override;
 
 private:
-    enum class State : uint8_t {
-        Idle,
-        Starting,
-        Recording,
-        Stopping,
-        Saved,
-        Error,
-    };
+  enum class State : uint8_t {
+    Idle,
+    Starting,
+    Recording,
+    Stopping,
+    Saved,
+    Error,
+    LoadingLibrary,
+    Library,
+    PreparingPlayback,
+    Playing,
+    PlaybackStopped,
+  };
 
-    static Recorder *_instance;
+  static Recorder *_instance;
 
-    lv_obj_t *_status_label = nullptr;
-    lv_obj_t *_time_label = nullptr;
-    lv_obj_t *_path_label = nullptr;
-    lv_obj_t *_level_bar = nullptr;
-    lv_obj_t *_record_button = nullptr;
-    lv_obj_t *_record_button_label = nullptr;
-    lv_timer_t *_ui_timer = nullptr;
+  lv_obj_t *_record_root = nullptr;
+  lv_obj_t *_library_root = nullptr;
+  lv_obj_t *_library_button = nullptr;
+  lv_obj_t *_library_back = nullptr;
+  lv_obj_t *_library_status = nullptr;
+  lv_obj_t *_older_button = nullptr;
+  lv_obj_t *_stop_button = nullptr;
+  lv_obj_t *_row_buttons[5] = {};
+  lv_obj_t *_row_labels[5] = {};
+  dpwatch::RecordingPage _page;
+  bool _library_mode = false;
+  bool _refresh_library = false;
+  char _browse_cursor[160] = {};
+  char _play_path[192] = {};
+  std::atomic<uint32_t> _play_bytes_per_second{0};
+  std::atomic<uint32_t> _play_total{0};
+  lv_obj_t *_status_label = nullptr;
+  lv_obj_t *_time_label = nullptr;
+  lv_obj_t *_path_label = nullptr;
+  lv_obj_t *_level_bar = nullptr;
+  lv_obj_t *_record_button = nullptr;
+  lv_obj_t *_record_button_label = nullptr;
+  lv_timer_t *_ui_timer = nullptr;
 
-    std::atomic<State> _state{State::Idle};
-    std::atomic<TaskHandle_t> _record_task{nullptr};
-    std::atomic<bool> _stop_requested{false};
-    std::atomic<bool> _worker_stopped{true};
-    std::atomic<uint64_t> _pcm_bytes{0};
-    std::atomic<int64_t> _started_us{0};
-    std::atomic<uint32_t> _peak{0};
-    std::atomic<esp_err_t> _last_error{ESP_OK};
-    std::atomic<bool> _audio_session_acquired{false};
-    std::atomic<bool> _codec_claimed{false};
-    char _last_path[192] = {};
+  std::atomic<State> _state{State::Idle};
+  std::atomic<TaskHandle_t> _record_task{nullptr};
+  std::atomic<bool> _stop_requested{false};
+  std::atomic<bool> _worker_stopped{true};
+  std::atomic<uint64_t> _pcm_bytes{0};
+  std::atomic<int64_t> _started_us{0};
+  std::atomic<uint32_t> _peak{0};
+  std::atomic<esp_err_t> _last_error{ESP_OK};
+  std::atomic<bool> _audio_session_acquired{false};
+  std::atomic<bool> _codec_claimed{false};
+  char _last_path[192] = {};
 
-    bool startRecording();
-    bool stopRecording(TickType_t timeout);
-    bool releaseAudioSession();
-    void destroyUi();
-    void updateUi();
+  bool startRecording();
+  bool beginWorker(TaskFunction_t worker, State state);
+  bool loadLibrary(bool older);
+  bool startPlayback(size_t index);
+  void createLibraryUi(lv_obj_t *screen);
+  void updateLibraryUi();
+  static void libraryEvent(lv_event_t *event);
+  static void libraryTask(void *arg);
+  static void playbackTask(void *arg);
+  bool stopRecording(TickType_t timeout);
+  bool releaseAudioSession();
+  void destroyUi();
+  void updateUi();
 
-    static void recordTask(void *arg);
-    static void buttonEvent(lv_event_t *event);
-    static void uiTimer(lv_timer_t *timer);
+  static void recordTask(void *arg);
+  static void buttonEvent(lv_event_t *event);
+  static void uiTimer(lv_timer_t *timer);
 };
 
 } // namespace esp_brookesia::apps

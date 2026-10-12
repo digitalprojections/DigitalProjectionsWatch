@@ -54,7 +54,7 @@ namespace esp_brookesia::apps
         settings_ui::add_info_row(
             list1, nullptr, "Product", "Digital Projections Watch", style_list_btn);
 
-        settings_ui::add_info_row(list1, nullptr, "Version", "0.1.4", style_list_btn);
+        settings_ui::add_info_row(list1, nullptr, "Version", "0.1.5", style_list_btn);
         settings_ui::add_info_row(list1, nullptr, "Board", "Waveshare AMOLED 2.06", style_list_btn);
         settings_ui::add_section(list1, "Software", style_list_text);
         settings_ui::add_info_row(list1, nullptr, "UI Framework", "ESP-Brookesia", style_list_btn);

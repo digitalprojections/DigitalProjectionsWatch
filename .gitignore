@@ -21,3 +21,6 @@ __pycache__/
 *.log
 
 FirmWare/watch/dependencies.lock
+
+# Private recorder captures and interrupted recording data
+.local-recordings/

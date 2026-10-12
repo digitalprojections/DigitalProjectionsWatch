@@ -2,6 +2,7 @@
 #include "MotionService.h"
 #include "PhoneSetup.h"
 #include "Settings.hpp"
+#include "Recorder.hpp"
 #include "storage_service.h"
 #include "esp_console.h"
 #include "esp_heap_caps.h"
@@ -12,6 +13,12 @@
 namespace {
 using namespace esp_brookesia::systems;
 phone::Phone *systemPhone = nullptr;
+int recorder(int argc, char **argv) {
+    if(argc>2 || esp_lv_adapter_lock(1000)!=ESP_OK)return 1;
+    auto *app=esp_brookesia::apps::Recorder::requestInstance();
+    const bool ok=systemPhone->getManager().getActiveApp()==app && app->diagnostic(argc==2?argv[1]:"status");
+    esp_lv_adapter_unlock();return ok?0:1;
+}
 int motion(int, char **) {
     const auto s = dpwatch::motionSnapshot();
     constexpr const char *states[] = {"needed", "loading", "ready", "unavailable", "error"};
@@ -85,6 +92,7 @@ void startWatchConsole(esp_brookesia::systems::phone::Phone *phone) {
     esp_console_dev_usb_serial_jtag_config_t hardware = ESP_CONSOLE_DEV_USB_SERIAL_JTAG_CONFIG_DEFAULT();
     if (esp_console_new_repl_usb_serial_jtag(&hardware, &config, &repl) != ESP_OK) return;
     const esp_console_cmd_t commands[] = {
+        {.command="recorder", .help="Recorder UI status/library/play1..5/stop/back/older/record", .hint=nullptr, .func=recorder, .argtable=nullptr},
         {.command="phone_setup", .help="Bluetooth Wi-Fi setup status/start/stop/page", .hint=nullptr, .func=phoneSetup, .argtable=nullptr},
         {.command="sd", .help="Show SD status; sd test checks a private temporary file", .hint=nullptr, .func=storage, .argtable=nullptr},
         {.command="motion", .help="Show shared motion status and calibration generation", .hint=nullptr, .func=motion, .argtable=nullptr},

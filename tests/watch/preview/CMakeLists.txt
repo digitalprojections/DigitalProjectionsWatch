@@ -17,3 +17,8 @@ add_executable(phone_preview phone_preview.cpp)
 target_include_directories(phone_preview PRIVATE ../../../FirmWare/watch/components/dp_connectivity ../../../FirmWare/watch/components/dp_motion/include)
 target_link_libraries(phone_preview PRIVATE lvgl)
 target_compile_options(phone_preview PRIVATE /UNDEBUG)
+
+add_executable(recorder_preview recorder_preview.cpp)
+target_include_directories(recorder_preview PRIVATE ../../../FirmWare/watch/components/Recorder)
+target_link_libraries(recorder_preview PRIVATE lvgl)
+target_compile_options(recorder_preview PRIVATE /UNDEBUG)
