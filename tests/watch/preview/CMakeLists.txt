@@ -12,3 +12,8 @@ target_link_libraries(preview PRIVATE lvgl)
 
 
 target_compile_options(preview PRIVATE /UNDEBUG)
+
+add_executable(phone_preview phone_preview.cpp)
+target_include_directories(phone_preview PRIVATE ../../../FirmWare/watch/components/dp_connectivity ../../../FirmWare/watch/components/dp_motion/include)
+target_link_libraries(phone_preview PRIVATE lvgl)
+target_compile_options(phone_preview PRIVATE /UNDEBUG)

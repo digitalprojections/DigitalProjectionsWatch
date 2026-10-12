@@ -104,7 +104,8 @@ namespace esp_brookesia::apps
         lv_obj_add_style(list1, &style_list, LV_PART_MAIN);
 
         settings_ui::add_section(list1, "Wireless", style_list_text);
-        add_button_with_arrow(&WIFI, "WLAN");
+        add_button_with_arrow(&WIFI, "Wi-Fi");
+        add_button_with_arrow(&BLE, "Bluetooth");
 
         settings_ui::add_section(list1, "Media", style_list_text);
         add_button_with_arrow(&sound, "Sound");
@@ -170,9 +171,13 @@ namespace esp_brookesia::apps
         const char *txt = lv_list_get_button_text(list1, obj);
         ESP_UTILS_LOGI("Clicked: %s", txt);
 
-        if (strcmp(txt, "WLAN") == 0)
+        if (strcmp(txt, "Wi-Fi") == 0)
         {
             lv_async_call(open_page_async_cb, (void *)"WLAN");
+        }
+        else if (strcmp(txt, "Bluetooth") == 0)
+        {
+            lv_async_call(open_page_async_cb, (void *)"Bluetooth");
         }
         else if (strcmp(txt, "Sound") == 0)
         {
@@ -205,6 +210,11 @@ namespace esp_brookesia::apps
             active_page = ActivePage::Wlan;
             WlanPage::requestInstance(false, false)->run();
         }
+        else if (strcmp(page_name, "Bluetooth") == 0)
+        {
+            active_page = ActivePage::Bluetooth;
+            BluetoothPage::instance().run();
+        }
         else if (strcmp(page_name, "Sound") == 0)
         {
             active_page = ActivePage::Sound;
@@ -236,6 +246,9 @@ namespace esp_brookesia::apps
     {
         switch (active_page)
         {
+        case ActivePage::Bluetooth:
+            BluetoothPage::instance().close();
+            break;
         case ActivePage::Wlan:
             WlanPage::requestInstance(false, false)->close();
             break;
@@ -260,6 +273,8 @@ namespace esp_brookesia::apps
         }
         active_page = ActivePage::None;
     }
+
+    void Settings::showBluetoothPage() { close_active_page(); open_page("Bluetooth"); }
 
     void Settings::showRootPage()
     {

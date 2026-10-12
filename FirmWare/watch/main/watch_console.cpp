@@ -1,5 +1,7 @@
 #include "watch_console.hpp"
 #include "MotionService.h"
+#include "PhoneSetup.h"
+#include "Settings.hpp"
 #include "storage_service.h"
 #include "esp_console.h"
 #include "esp_heap_caps.h"
@@ -17,6 +19,18 @@ int motion(int, char **) {
         states[static_cast<unsigned>(s.state)], s.generation, s.ageMs,
         s.sample.ax,s.sample.ay,s.sample.az,s.sample.gx,s.sample.gy,s.sample.gz,s.bootPressed);
     return 0;
+}
+int phoneSetup(int argc, char **argv) {
+ if(argc==2 && std::strcmp(argv[1],"start")==0) dpwatch::startPhoneSetup();
+ else if(argc==2 && std::strcmp(argv[1],"stop")==0) dpwatch::stopPhoneSetup();
+ else if(argc==2 && std::strcmp(argv[1],"page")==0) {
+  if(esp_lv_adapter_lock(1000)!=ESP_OK)return 1;
+  esp_brookesia::apps::Settings::requestInstance()->showBluetoothPage();
+  esp_lv_adapter_unlock();
+ } else if(argc!=1)return 1;
+ const auto s=dpwatch::phoneSetupSnapshot();
+ std::printf("PHONE_SETUP state=%u can_start=%d can_stop=%d free_internal=%u\n",static_cast<unsigned>(s.state),s.canStart,s.canStop,static_cast<unsigned>(heap_caps_get_free_size(MALLOC_CAP_INTERNAL)));
+ return 0;
 }
 int calibrate(int, char **) { dpwatch::requestMotionCalibration(); std::puts("Calibration requested; keep flat and still."); return 0; }
 int storage(int argc, char **argv) {
@@ -71,6 +85,7 @@ void startWatchConsole(esp_brookesia::systems::phone::Phone *phone) {
     esp_console_dev_usb_serial_jtag_config_t hardware = ESP_CONSOLE_DEV_USB_SERIAL_JTAG_CONFIG_DEFAULT();
     if (esp_console_new_repl_usb_serial_jtag(&hardware, &config, &repl) != ESP_OK) return;
     const esp_console_cmd_t commands[] = {
+        {.command="phone_setup", .help="Bluetooth Wi-Fi setup status/start/stop/page", .hint=nullptr, .func=phoneSetup, .argtable=nullptr},
         {.command="sd", .help="Show SD status; sd test checks a private temporary file", .hint=nullptr, .func=storage, .argtable=nullptr},
         {.command="motion", .help="Show shared motion status and calibration generation", .hint=nullptr, .func=motion, .argtable=nullptr},
         {.command="calibrate", .help="Calibrate the shared motion sensor while flat and still", .hint=nullptr, .func=calibrate, .argtable=nullptr},

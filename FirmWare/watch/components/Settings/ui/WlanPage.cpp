@@ -179,7 +179,7 @@ namespace esp_brookesia::apps
         lv_obj_clean(lv_scr_act());
 
         page_root = settings_ui::create_page(lv_scr_act());
-        status_btn = settings_ui::create_header(page_root, "WLAN", [](lv_event_t *e) {
+        status_btn = settings_ui::create_header(page_root, "Wi-Fi", [](lv_event_t *e) {
             (void)e;
             WlanPage *page = WlanPage::requestInstance();
             queue_lvgl_async_from_gui([](void *param) {
@@ -203,6 +203,11 @@ namespace esp_brookesia::apps
         list1 = settings_ui::create_content_list(page_root);
         lv_obj_add_style(list1, &style_list, LV_PART_MAIN);
 
+        auto *phone = lv_list_add_button(list1, LV_SYMBOL_BLUETOOTH, "Set up with phone");
+        lv_obj_add_style(phone, &style_list_btn, LV_PART_MAIN);
+        lv_obj_add_event_cb(phone, [](lv_event_t*) {
+            lv_async_call([](void*) { Settings::requestInstance()->showBluetoothPage(); }, nullptr);
+        }, LV_EVENT_CLICKED, nullptr);
         settings_ui::add_section(list1, "Network", style_list_text);
 
         lv_obj_t *wlan_btn = lv_list_add_button(list1, nullptr, "Wi-Fi");

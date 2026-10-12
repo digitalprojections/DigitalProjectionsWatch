@@ -64,6 +64,9 @@ esp_err_t set_wifi_enabled(bool enabled);
 /** Connect using a new STA configuration under the resident reconnect policy. */
 esp_err_t connect_wifi(const wifi_config_t &config);
 
+/** Temporarily yield Wi-Fi driver ownership to Bluetooth provisioning. */
+esp_err_t set_wifi_provisioning(bool active);
+
 /** Request a connection attempt using the currently stored STA configuration. */
 esp_err_t request_wifi_connect();
 

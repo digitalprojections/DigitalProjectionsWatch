@@ -15,6 +15,7 @@
 #include "./ui/SoundPage.hpp"
 #include "./ui/StoragePage.hpp"
 #include "./ui/WlanPage.hpp"
+#include "./ui/BluetoothPage.hpp"
 
 namespace esp_brookesia::apps
 {
@@ -30,6 +31,7 @@ namespace esp_brookesia::apps
         ~Settings();
         bool run(void) override;
         void showRootPage();
+        void showBluetoothPage();
 
     protected:
         Settings(bool use_status_bar, bool use_navigation_bar);
@@ -45,6 +47,7 @@ namespace esp_brookesia::apps
         enum class ActivePage {
             None,
             Wlan,
+            Bluetooth,
             Sound,
             Display,
             Power,

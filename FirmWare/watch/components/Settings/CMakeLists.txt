@@ -7,7 +7,7 @@ idf_component_register(
     SRCS  ${PROJ_SRCS_C} ${PROJ_SRCS_CPP}
     INCLUDE_DIRS ${PROJ_SRC}
     REQUIRES brookesia_core dp_watch_board driver esp_wifi lwip bsp_extra
-             system_status storage_service chat_history esp_system esp_hw_support heap esp_timer
+             dp_connectivity system_status storage_service chat_history esp_system esp_hw_support heap esp_timer
     PRIV_REQUIRES espressif__esp_lvgl_adapter
 )
 

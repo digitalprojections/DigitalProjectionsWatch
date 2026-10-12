@@ -9,3 +9,7 @@ subprocess.run(['cmake','--build',str(BUILD),'--config','Release','--parallel','
 subprocess.run([str(BUILD/'Release/preview.exe'),str(BUILD/'preview.ppm')],check=True)
 Image.open(BUILD/'preview.ppm').save(ROOT/'.build/preview.png')
 print(ROOT/'.build/preview.png')
+
+subprocess.run([str(BUILD/'Release/phone_preview.exe'),str(BUILD/'phone-preview.ppm')],check=True)
+Image.open(BUILD/'phone-preview.ppm').save(ROOT/'.build/phone-preview.png')
+print(ROOT/'.build/phone-preview.png')

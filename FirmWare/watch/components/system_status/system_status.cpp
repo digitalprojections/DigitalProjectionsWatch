@@ -295,6 +295,15 @@ public:
         return _running.load();
     }
 
+    esp_err_t setWifiProvisioning(bool active) {
+        SemaphoreLock api_lock(_api_mutex);
+        SemaphoreLock wifi_lock(_wifi_mutex);
+        if (!api_lock.isLocked() || !wifi_lock.isLocked() || !_running.load()) return ESP_ERR_INVALID_STATE;
+        _provisioning.store(active);
+        _wifi_reconnect_requested.store(!active && _wifi_enabled.load());
+        return ESP_OK;
+    }
+
     esp_err_t setWifiEnabled(bool enabled)
     {
         SemaphoreLock api_lock(_api_mutex);
@@ -309,6 +318,7 @@ public:
             return ESP_FAIL;
         }
 
+        if (_provisioning.load()) return ESP_ERR_INVALID_STATE;
         esp_err_t result = persistWifiEnabled(enabled);
         if (result != ESP_OK) {
             return result;
@@ -344,7 +354,7 @@ public:
         if (!api_lock.isLocked()) {
             return ESP_ERR_INVALID_STATE;
         }
-        if (!_running.load() || !_wifi_enabled.load()) {
+        if (!_running.load() || !_wifi_enabled.load() || _provisioning.load()) {
             return ESP_ERR_INVALID_STATE;
         }
         SemaphoreLock wifi_lock(_wifi_mutex);
@@ -382,7 +392,7 @@ public:
         if (!api_lock.isLocked()) {
             return ESP_ERR_INVALID_STATE;
         }
-        if (!_running.load() || !_wifi_enabled.load()) {
+        if (!_running.load() || !_wifi_enabled.load() || _provisioning.load()) {
             return ESP_ERR_INVALID_STATE;
         }
         SemaphoreLock wifi_lock(_wifi_mutex);
@@ -520,7 +530,7 @@ private:
                 // by the UI APIs. This prevents a stale monitor iteration from
                 // overwriting a freshly toggled switch or new STA config.
                 next.wifi_enabled = _wifi_enabled.load();
-                if (next.wifi_enabled && !_wifi_started.load()) {
+                if (!_provisioning.load() && next.wifi_enabled && !_wifi_started.load()) {
                     const esp_err_t wifi_start_result = applyWifiEnabledState(true);
                     if (wifi_start_result != ESP_OK && _last_wifi_start_error != wifi_start_result) {
                         ESP_LOGW(
@@ -530,7 +540,7 @@ private:
                         );
                     }
                     _last_wifi_start_error = wifi_start_result;
-                } else if (!next.wifi_enabled && _wifi_started.load()) {
+                } else if (!_provisioning.load() && !next.wifi_enabled && _wifi_started.load()) {
                     const esp_err_t wifi_stop_result = applyWifiEnabledState(false);
                     if (wifi_stop_result != ESP_OK && _last_wifi_start_error != wifi_stop_result) {
                         ESP_LOGW(
@@ -851,7 +861,7 @@ private:
 
     void serviceWifiReconnect()
     {
-        if (!_wifi_enabled.load() || !_wifi_started.load() ||
+        if (_provisioning.load() || !_wifi_enabled.load() || !_wifi_started.load() ||
                 _manual_wifi_configuration.load() ||
                 !_wifi_reconnect_requested.exchange(false)) {
             return;
@@ -949,6 +959,7 @@ private:
     std::atomic<bool> _wifi_event_connected = false;
     std::atomic<bool> _wifi_reconnect_requested = false;
     std::atomic<bool> _manual_wifi_configuration = false;
+    std::atomic<bool> _provisioning = false;
     uint32_t _refresh_period_ms = 1000;
     esp_err_t _last_battery_error = ESP_OK;
     esp_err_t _last_pmu_init_error = ESP_OK;
@@ -983,6 +994,8 @@ bool get_snapshot(Snapshot &snapshot)
 {
     return monitor().getSnapshot(snapshot);
 }
+
+esp_err_t set_wifi_provisioning(bool active) { return monitor().setWifiProvisioning(active); }
 
 esp_err_t set_wifi_enabled(bool enabled)
 {

@@ -7,7 +7,7 @@ BUILD = ROOT / '.build' / 'watch-tests'
 BUILD.mkdir(parents=True, exist_ok=True)
 INCLUDE = ROOT / 'FirmWare/watch/components/dp_motion/include'
 VCVARS = Path(os.environ.get('ProgramFiles', 'C:/Program Files')) / 'Microsoft Visual Studio/2022/Community/VC/Auxiliary/Build/vcvars64.bat'
-for name in ('core_tests', 'calibration_tests', 'swipe_tests'):
+for name in ('core_tests', 'calibration_tests', 'swipe_tests', 'provisioning_tests'):
     executable = BUILD / (name + '.exe')
     source = ROOT / 'tests/watch' / (name + '.cpp')
     command = f'call "{VCVARS}" >nul && cl /nologo /EHsc /std:c++17 /W4 /WX /I"{INCLUDE}" /Fe:"{executable}" /Fo:"{BUILD / (name + ".obj")}" "{source}"'

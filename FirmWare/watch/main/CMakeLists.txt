@@ -12,6 +12,7 @@ idf_component_register(
         draw
         espressif__esp_lvgl_adapter
         console
+        dp_connectivity
         dp_motion
         dp_watch_2048
         dp_watch_board
