@@ -103,7 +103,7 @@ namespace esp_brookesia::apps
             }
         }, LV_EVENT_CLICKED, nullptr);
         lv_obj_t *hint = lv_label_create(list1);
-        lv_label_set_text(hint, "PWR: screen off / on.\nTouch or BOOT also wakes.");
+        lv_label_set_text(hint, "PWR: screen off / on.\nOnly PWR wakes the screen.");
         lv_obj_set_width(hint, lv_pct(100));
         lv_obj_set_style_text_font(hint, &lv_font_montserrat_20, 0);
         lv_obj_set_style_text_color(hint, lv_color_hex(settings_ui::COLOR_SECONDARY_TEXT), 0);
